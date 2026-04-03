@@ -1,0 +1,12 @@
+{
+  "name": "automation-ui-playwright-typescript",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.59.1",
+    "typescript": "^5.7.2",
+    "dotenv": "^16.4.7"
+  }
+}
