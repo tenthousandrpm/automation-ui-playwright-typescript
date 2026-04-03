@@ -9,6 +9,18 @@ The test suite runs against the [RealWorld](https://github.com/realworld-apps/re
 - **Frontend:** [realworld-react-fsd](https://github.com/yurisldk/realworld-react-fsd) — React 18 + TypeScript
 - **Backend:** [realworld-django-ninja](https://github.com/c4ffein/realworld-django-ninja) — Django Ninja + PostgreSQL
 
+## Project Structure
+
+```
+.
+├── config/             # Typed environment config
+├── fixtures/           # Custom Playwright fixtures
+├── pages/              # Page Object Models
+├── tests/              # Test specs
+├── playwright.config.ts
+└── docker-compose.yml
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -16,20 +28,20 @@ The test suite runs against the [RealWorld](https://github.com/realworld-apps/re
 - [Docker](https://www.docker.com/) and Docker Compose
 - Node.js 20+
 
-### Start the application
+### 1. Start the application
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-| Service  | URL                         |
-|----------|-----------------------------|
-| Frontend | http://localhost:4100        |
-| API      | http://localhost:8000/api   |
-| API Docs | http://localhost:8000/docs  |
+| Service  | URL                        |
+|----------|----------------------------|
+| Frontend | http://localhost:4100       |
+| API      | http://localhost:8000/api  |
+| API Docs | http://localhost:8000/docs |
 
-### Run tests
+### 2. Run tests
 
 ```bash
 npm install
@@ -37,17 +49,42 @@ npx playwright install
 npx playwright test
 ```
 
+### Run a specific browser
+
+```bash
+npx playwright test --project=chromium
+npx playwright test --project=firefox
+npx playwright test --project=webkit
+```
+
+### View the HTML report
+
+```bash
+npx playwright show-report
+```
+
+Traces, screenshots, and videos are captured automatically on failure.
+
 ## Configuration
 
 Copy `.env.example` to `.env` and adjust as needed.
 
-| Variable        | Default                          | Description                    |
-|-----------------|----------------------------------|--------------------------------|
-| `BASE_URL`      | `http://localhost:4100`          | Frontend URL for Playwright    |
-| `HEADLESS`      | `true`                           | Run browsers headlessly        |
-| `API_PORT`      | `8000`                           | Backend port                   |
-| `FRONTEND_PORT` | `4100`                           | Frontend port                  |
-| `DB_USER`       | `postgres`                       | PostgreSQL user                |
-| `DB_PASSWORD`   | `postgres`                       | PostgreSQL password            |
-| `DB_NAME`       | `realworld`                      | PostgreSQL database name       |
-| `SECRET_KEY`    | `dev-secret-key-...`             | Django secret key              |
+| Variable              | Default                         | Description                          |
+|-----------------------|---------------------------------|--------------------------------------|
+| `BASE_URL`            | `http://localhost:4100`         | Frontend URL for Playwright          |
+| `API_URL`             | `http://localhost:8000/api`     | Backend API URL for fixtures         |
+| `HEADLESS`            | `true`                          | Run browsers headlessly              |
+| `TEST_USER_EMAIL`     | `test@example.com`              | Credentials for authenticated tests  |
+| `TEST_USER_PASSWORD`  | `password123`                   | Credentials for authenticated tests  |
+| `API_PORT`            | `8000`                          | Backend port                         |
+| `FRONTEND_PORT`       | `4100`                          | Frontend port                        |
+| `DB_USER`             | `postgres`                      | PostgreSQL user                      |
+| `DB_PASSWORD`         | `postgres`                      | PostgreSQL password                  |
+| `DB_NAME`             | `realworld`                     | PostgreSQL database name             |
+| `SECRET_KEY`          | `dev-secret-key-...`            | Django secret key                    |
+
+## Design
+
+- **Page Object Model** — all locators and actions live in `pages/`, tests never use raw selectors
+- **Custom fixtures** — `authenticatedPage` logs in via API and injects session state directly into the browser, bypassing the login UI
+- **Typed config** — `config/env.ts` is the single source of truth for environment variables
