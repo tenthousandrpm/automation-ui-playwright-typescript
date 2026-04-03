@@ -2,13 +2,34 @@
 
 A portfolio-grade end-to-end test automation framework built with [Playwright](https://playwright.dev) and TypeScript.
 
+## Target Application
+
+The test suite runs against the [RealWorld](https://github.com/realworld-apps/realworld) demo app:
+
+- **Frontend:** [realworld-react-fsd](https://github.com/yurisldk/realworld-react-fsd) — React 18 + TypeScript
+- **Backend:** [realworld-django-ninja](https://github.com/c4ffein/realworld-django-ninja) — Django Ninja + PostgreSQL
+
 ## Getting Started
 
 ### Prerequisites
 
+- [Docker](https://www.docker.com/) and Docker Compose
 - Node.js 20+
 
-### Run locally
+### Start the application
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+| Service  | URL                         |
+|----------|-----------------------------|
+| Frontend | http://localhost:4100        |
+| API      | http://localhost:8000/api   |
+| API Docs | http://localhost:8000/docs  |
+
+### Run tests
 
 ```bash
 npm install
@@ -16,17 +37,17 @@ npx playwright install
 npx playwright test
 ```
 
-### Run in Docker
-
-```bash
-docker build -t skeleton-playwright . && docker run --rm skeleton-playwright
-```
-
 ## Configuration
 
-Environment variables are managed via `.env`.
+Copy `.env.example` to `.env` and adjust as needed.
 
-| Variable | Default | Description |
-|---|---|---|
-| `BASE_URL` | `https://example.com` | Target URL |
-| `HEADLESS` | `true` | Run browsers headlessly |
+| Variable        | Default                          | Description                    |
+|-----------------|----------------------------------|--------------------------------|
+| `BASE_URL`      | `http://localhost:4100`          | Frontend URL for Playwright    |
+| `HEADLESS`      | `true`                           | Run browsers headlessly        |
+| `API_PORT`      | `8000`                           | Backend port                   |
+| `FRONTEND_PORT` | `4100`                           | Frontend port                  |
+| `DB_USER`       | `postgres`                       | PostgreSQL user                |
+| `DB_PASSWORD`   | `postgres`                       | PostgreSQL password            |
+| `DB_NAME`       | `realworld`                      | PostgreSQL database name       |
+| `SECRET_KEY`    | `dev-secret-key-...`             | Django secret key              |
