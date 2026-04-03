@@ -1,0 +1,17 @@
+{
+    "name": "playwright-typescript",
+    "image": "mcr.microsoft.com/playwright:v1.59.1-jammy",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "extensions": [
+        "anthropic.claude-code",
+        "github.copilot-chat",
+        "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-docker",
+        "ms-playwright.playwright",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+    ],
+    "postCreateCommand": "npm install -g npm@11.12.1 && npm install"
+}
