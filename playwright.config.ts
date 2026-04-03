@@ -6,7 +6,7 @@ dotenv.config();
 export default defineConfig({
   testDir: './tests',
   use: {
-    baseURL: process.env.BASE_URL || 'https://example.com',
+    baseURL: process.env.BASE_URL || 'http://localhost:4100',
     headless: process.env.HEADLESS !== 'false',
   },
 });
