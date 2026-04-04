@@ -74,8 +74,9 @@ Copy `.env.example` to `.env` and adjust as needed.
 | `BASE_URL`            | `http://localhost:4100`         | Frontend URL for Playwright          |
 | `API_URL`             | `http://localhost:8000/api`     | Backend API URL for fixtures         |
 | `HEADLESS`            | `true`                          | Run browsers headlessly              |
-| `TEST_USER_EMAIL`     | `test@example.com`              | Credentials for authenticated tests  |
-| `TEST_USER_PASSWORD`  | `password123`                   | Credentials for authenticated tests  |
+| `TEST_USER_USERNAME`  | `testuser`                      | Test user seeded before suite runs   |
+| `TEST_USER_EMAIL`     | `test@example.com`              | Test user seeded before suite runs   |
+| `TEST_USER_PASSWORD`  | `password123`                   | Test user seeded before suite runs   |
 | `API_PORT`            | `8000`                          | Backend port                         |
 | `FRONTEND_PORT`       | `4100`                          | Frontend port                        |
 | `DB_USER`             | `postgres`                      | PostgreSQL user                      |
