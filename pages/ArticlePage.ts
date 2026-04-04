@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class ArticlePage extends BasePage {
@@ -7,7 +7,16 @@ export class ArticlePage extends BasePage {
   }
 
   async goto(slug: string) {
-    await this.page.goto(`/article/${slug}`);
+    const url = this.page.url();
+    if (url.startsWith('http://localhost')) {
+      // Already on the app — use client-side navigation to preserve the Redux store
+      await this.navHome.click();
+      await this.page.locator(`a[href^="/article/${slug}"]`).first().click();
+    } else {
+      // Blank page — no session to preserve, full navigation is fine
+      await this.page.goto(`/article/${slug}`);
+    }
+    await expect(this.page).toHaveURL(/\/article\//);
   }
 
   get title() {
@@ -27,11 +36,18 @@ export class ArticlePage extends BasePage {
   }
 
   get favoriteButton() {
-    return this.page.locator('[data-test="favorite-extended-button"]');
+    return this.page.locator('.banner [data-test="favorite-extended-button"]');
   }
 
-  get followButton() {
-    return this.page.locator('[data-test="follow-button"]');
+  get unfavoriteButton() {
+    return this.page.locator('.banner [data-test="unfavorite-extended-button"]');
+  }
+
+  async clickFavorite() {
+    await Promise.all([
+      this.page.waitForResponse((r) => r.url().includes('/favorite') && r.status() === 200),
+      this.favoriteButton.click(),
+    ]);
   }
 
   get commentInput() {
@@ -48,6 +64,9 @@ export class ArticlePage extends BasePage {
 
   async postComment(text: string) {
     await this.commentInput.fill(text);
-    await this.commentSubmit.click();
+    await Promise.all([
+      this.page.waitForResponse((r) => r.url().includes('/comments') && r.request().method() === 'POST'),
+      this.commentSubmit.click(),
+    ]);
   }
 }

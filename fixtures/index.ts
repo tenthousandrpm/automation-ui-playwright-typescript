@@ -1,5 +1,5 @@
-import { test as base, request as baseRequest } from '@playwright/test';
-import { config } from '../config/env';
+import { test as base, expect, APIRequestContext } from '@playwright/test';
+import { createCsrfAwareApiContext } from '../config/csrf';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
@@ -16,6 +16,7 @@ type Pages = {
 
 type AuthFixtures = {
   authenticatedPage: { token: string; username: string; email: string };
+  apiRequest: APIRequestContext;
 };
 
 export const test = base.extend<Pages & AuthFixtures>({
@@ -39,40 +40,30 @@ export const test = base.extend<Pages & AuthFixtures>({
     await use(new EditorPage(page));
   },
 
-  authenticatedPage: async ({ page }, use) => {
-    const apiContext = await baseRequest.newContext({ baseURL: config.apiUrl });
+  apiRequest: async ({}, use) => {
+    const { context } = await createCsrfAwareApiContext();
+    await use(context);
+    await context.dispose();
+  },
 
-    const response = await apiContext.post('/users/login', {
-      data: {
-        user: {
-          email: process.env.TEST_USER_EMAIL!,
-          password: process.env.TEST_USER_PASSWORD!,
-        },
-      },
-    });
+  authenticatedPage: async ({ page }, use) => {
+    await page.goto('/login');
+
+    const [response] = await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/users/login') && r.status() === 200),
+      (async () => {
+        await page.locator('[data-test="login-email"]').fill(process.env.TEST_USER_EMAIL!);
+        await page.locator('[data-test="login-password"]').fill(process.env.TEST_USER_PASSWORD!);
+        await page.locator('[data-test="login-submit"]').waitFor({ state: 'attached' });
+        await expect(page.locator('[data-test="login-submit"]')).toBeEnabled();
+        await page.locator('[data-test="login-submit"]').click();
+      })(),
+    ]);
 
     const { user } = await response.json();
+    await page.waitForURL((url) => !url.pathname.startsWith('/login'));
 
-    // redux-persist stores state in localStorage under 'persist:root'
-    // each slice is a JSON-serialized string within that object
-    await page.goto('/');
-    await page.evaluate((sessionUser: typeof user) => {
-      const persistRoot = {
-        session: JSON.stringify({
-          email: sessionUser.email,
-          token: sessionUser.token,
-          username: sessionUser.username,
-          image: sessionUser.image || '',
-          bio: sessionUser.bio || '',
-        }),
-        _persist: JSON.stringify({ version: -1, rehydrated: true }),
-      };
-      localStorage.setItem('persist:root', JSON.stringify(persistRoot));
-    }, user);
-
-    await page.reload();
     await use({ token: user.token, username: user.username, email: user.email });
-    await apiContext.dispose();
   },
 });
 

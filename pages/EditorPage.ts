@@ -1,15 +1,18 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class EditorPage extends BasePage {
-  readonly url = '/editor';
-
   constructor(page: Page) {
     super(page);
   }
 
   async goto(slug?: string) {
-    await this.page.goto(slug ? `/editor/${slug}` : this.url);
+    if (slug) {
+      await this.page.goto(`/editor/${slug}`);
+    } else {
+      await this.navNewArticle.click();
+    }
+    await expect(this.page).toHaveURL(/\/editor/);
   }
 
   get titleInput() {
