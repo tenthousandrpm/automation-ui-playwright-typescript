@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 
-test('page title should not be empty', async ({ page }) => {
-  await page.goto('/');
-  await expect(page).not.toHaveTitle('');
+test('home page loads and shows global feed', async ({ homePage }) => {
+  await homePage.goto();
+  await expect(homePage.globalFeedTab).toBeVisible();
 });
