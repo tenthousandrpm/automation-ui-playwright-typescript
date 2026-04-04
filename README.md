@@ -6,8 +6,8 @@ A portfolio-grade end-to-end test automation framework built with [Playwright](h
 
 The test suite runs against the [RealWorld](https://github.com/realworld-apps/realworld) demo app:
 
-- **Frontend:** [realworld-react-fsd](https://github.com/yurisldk/realworld-react-fsd) — React 18 + TypeScript
-- **Backend:** [realworld-django-ninja](https://github.com/c4ffein/realworld-django-ninja) — Django Ninja + PostgreSQL
+- **Frontend:** [realworld-react-fsd](https://github.com/tenthousandrpm/realworld-react-fsd) — React 18 + TypeScript
+- **Backend:** [realworld-django-ninja](https://github.com/tenthousandrpm/realworld-django-ninja) — Django Ninja + PostgreSQL
 
 ## Project Structure
 
@@ -87,5 +87,5 @@ Copy `.env.example` to `.env` and adjust as needed.
 ## Design
 
 - **Page Object Model** — all locators and actions live in `pages/`, tests never use raw selectors
-- **Custom fixtures** — `authenticatedPage` logs in via API and injects session state directly into the browser, bypassing the login UI
+- **Custom fixtures** — `authenticatedPage` logs in through the UI and navigates via nav links to preserve the Redux store across page transitions
 - **Typed config** — `config/env.ts` is the single source of truth for environment variables
