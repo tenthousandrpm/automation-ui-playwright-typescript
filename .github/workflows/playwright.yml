@@ -1,0 +1,72 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Target base URL'
+        required: false
+        default: 'http://localhost:4100'
+      api_url:
+        description: 'Target API URL'
+        required: false
+        default: 'http://localhost:8000/api'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      COMPOSE_PROJECT_NAME: automation-ui-playwright-typescript
+      BASE_URL: ${{ inputs.base_url || 'http://localhost:4100' }}
+      API_URL: ${{ inputs.api_url || 'http://localhost:8000/api' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Start local services
+        if: startsWith(env.BASE_URL, 'http://localhost')
+        run: docker compose up -d --build
+
+      - name: Wait for frontend to be ready
+        if: startsWith(env.BASE_URL, 'http://localhost')
+        run: |
+          echo "Waiting for frontend at $BASE_URL..."
+          timeout 120 bash -c 'until curl -sf $BASE_URL > /dev/null 2>&1; do sleep 2; done'
+          echo "Frontend is ready"
+
+      - name: Build test image
+        run: docker build -t playwright-tests .
+
+      - name: Run tests
+        run: |
+          docker run --rm \
+            --network host \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -e CI=true \
+            -e BASE_URL=${{ env.BASE_URL }} \
+            -e API_URL=${{ env.API_URL }} \
+            -e HEADLESS=true \
+            -e TEST_USER_USERNAME=${{ secrets.TEST_USER_USERNAME || 'testuser' }} \
+            -e TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL || 'test@example.com' }} \
+            -e TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD || 'password123' }} \
+            -e ARTICLE_AUTHOR_USERNAME=${{ secrets.ARTICLE_AUTHOR_USERNAME || 'articleauthor' }} \
+            -e ARTICLE_AUTHOR_EMAIL=${{ secrets.ARTICLE_AUTHOR_EMAIL || 'author@example.com' }} \
+            -e ARTICLE_AUTHOR_PASSWORD=${{ secrets.ARTICLE_AUTHOR_PASSWORD || 'password123' }} \
+            -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+            -v ${{ github.workspace }}/test-results:/app/test-results \
+            playwright-tests
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
