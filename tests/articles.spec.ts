@@ -12,7 +12,7 @@ test.describe('Create Article', () => {
       tags: 'test',
     });
     await expect(page).toHaveURL(/\/article\//);
-    await expect(editorPage.page.locator('[data-test="article-title"]')).toHaveText(title);
+    await expect(page.locator('[data-test="article-title"]')).toHaveText(title);
   });
 
   test('unauthenticated user is redirected away from editor @regression', async ({ page }) => {

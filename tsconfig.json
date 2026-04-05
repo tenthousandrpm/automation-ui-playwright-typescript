@@ -4,6 +4,7 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
-  }
+    "types": ["node", "@playwright/test"]
+  },
+  "exclude": ["apps/frontend", "node_modules"]
 }
