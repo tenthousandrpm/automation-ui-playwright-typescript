@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures';
-import { getAuthToken, createArticle } from '../fixtures/api-helpers';
+import { getAuthToken, createArticle, followUser } from '../fixtures/api-helpers';
 
 test.describe('Home Page', () => {
   test.beforeAll(async ({ apiRequest }) => {
@@ -13,6 +13,60 @@ test.describe('Home Page', () => {
 
   test('global feed loads articles without error @smoke', async ({ homePage }) => {
     await homePage.goto();
+    await expect(homePage.articlePreviews.first()).toBeVisible();
+  });
+
+  test('tag list is visible on home page @regression', async ({ homePage }) => {
+    await homePage.goto();
+    await expect(homePage.tagList).toBeVisible();
+  });
+
+  test('clicking a tag filters the feed @regression', async ({ homePage, apiRequest }) => {
+    const tag = `testtag${Date.now()}`;
+    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    await createArticle(apiRequest, token, {
+      title: `Tagged Article ${Date.now()}`,
+      description: 'Tagged article',
+      body: 'Body',
+      tags: [tag],
+    });
+    await homePage.goto();
+    await homePage.clickTag(tag);
+    await expect(homePage.articlePreviews.first()).toBeVisible();
+  });
+});
+
+test.describe('Your Feed', () => {
+  test.beforeAll(async ({ apiRequest }) => {
+    // Test user follows the article author, who has an article
+    const testUserToken = await getAuthToken(
+      apiRequest,
+      process.env.TEST_USER_EMAIL!,
+      process.env.TEST_USER_PASSWORD!,
+    );
+    const authorUsername = process.env.ARTICLE_AUTHOR_USERNAME || 'articleauthor';
+    await followUser(apiRequest, testUserToken, authorUsername);
+
+    const authorToken = await getAuthToken(
+      apiRequest,
+      process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+    );
+    await createArticle(apiRequest, authorToken, {
+      title: `Your Feed Article ${Date.now()}`,
+      description: 'For your feed test',
+      body: 'Article body content',
+    });
+  });
+
+  test('authenticated user sees Your Feed tab @smoke', async ({ authenticatedPage, homePage }) => {
+    await homePage.goto();
+    await expect(homePage.yourFeedTab).toBeVisible();
+  });
+
+  test('Your Feed shows articles from followed users @regression', async ({ authenticatedPage, homePage }) => {
+    await homePage.goto();
+    await homePage.clickYourFeed();
     await expect(homePage.articlePreviews.first()).toBeVisible();
   });
 });

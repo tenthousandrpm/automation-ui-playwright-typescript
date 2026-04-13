@@ -24,9 +24,10 @@ export async function createArticle(
   token: string,
   article: { title: string; description: string; body: string; tags?: string[] },
 ): Promise<TestArticle> {
+  const { tags, ...rest } = article;
   const response = await request.post('articles', {
     headers: { Authorization: `Token ${token}` },
-    data: { article },
+    data: { article: { ...rest, ...(tags ? { tagList: tags } : {}) } },
   });
   const { article: created } = await response.json();
   return { slug: created.slug, title: created.title };
@@ -36,4 +37,24 @@ export async function deleteArticle(request: APIRequestContext, token: string, s
   await request.delete(`articles/${slug}`, {
     headers: { Authorization: `Token ${token}` },
   });
+}
+
+export async function followUser(request: APIRequestContext, token: string, username: string): Promise<void> {
+  await request.post(`profiles/${username}/follow`, {
+    headers: { Authorization: `Token ${token}` },
+  });
+}
+
+export async function createComment(
+  request: APIRequestContext,
+  token: string,
+  slug: string,
+  body: string,
+): Promise<number> {
+  const response = await request.post(`articles/${slug}/comments`, {
+    headers: { Authorization: `Token ${token}` },
+    data: { comment: { body } },
+  });
+  const { comment } = await response.json();
+  return comment.id;
 }

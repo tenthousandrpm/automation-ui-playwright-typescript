@@ -9,12 +9,20 @@ export class ArticlePage extends BasePage {
   async goto(slug: string) {
     const url = this.page.url();
     if (url.startsWith('http://localhost')) {
-      // Already on the app — use client-side navigation to preserve the Redux store
-      await this.navHome.click();
-      await this.page.locator(`a[href^="/article/${slug}"]`).first().click();
+      // Already on the app — navigate by clicking a link to preserve the Redux store.
+      // page.goto() causes a full page reload which loses the in-memory auth state.
+      // Check the current page first (after login the user lands on their profile page
+      // which already lists their articles), then fall back to the home feed for articles
+      // created by a different user.
+      const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
+      const foundOnCurrentPage = await articleLink().isVisible({ timeout: 3000 }).catch(() => false);
+      if (!foundOnCurrentPage) {
+        await this.navHome.click();
+      }
+      await articleLink().click();
     } else {
       // Blank page — no session to preserve, full navigation is fine
-      await this.page.goto(`/article/${slug}`);
+      await this.page.goto(`/article/${slug}/`);
     }
     await expect(this.page).toHaveURL(/\/article\//);
   }
@@ -32,7 +40,15 @@ export class ArticlePage extends BasePage {
   }
 
   get editButton() {
-    return this.page.locator('[data-test="article-edit-button"]');
+    return this.page.locator('.banner [data-test="article-edit-button"]');
+  }
+
+  get deleteButton() {
+    return this.page.locator('.banner [data-test="article-delete-button"]');
+  }
+
+  get tagList() {
+    return this.page.locator('[data-test="article-body"] .tag-list');
   }
 
   get favoriteButton() {
@@ -50,6 +66,20 @@ export class ArticlePage extends BasePage {
     ]);
   }
 
+  async clickUnfavorite() {
+    await Promise.all([
+      this.page.waitForResponse((r) => r.url().includes('/favorite') && r.status() === 200),
+      this.unfavoriteButton.click(),
+    ]);
+  }
+
+  async clickDelete() {
+    await Promise.all([
+      this.page.waitForURL(/\//),
+      this.deleteButton.click(),
+    ]);
+  }
+
   get commentInput() {
     return this.page.locator('[data-test="comment-input"]');
   }
@@ -60,6 +90,14 @@ export class ArticlePage extends BasePage {
 
   get comments() {
     return this.page.locator('[data-test="comment-item"]');
+  }
+
+  async deleteComment(text: string) {
+    const commentItem = this.comments.filter({ hasText: text });
+    await Promise.all([
+      this.page.waitForResponse((r) => r.url().includes('/comments/') && r.request().method() === 'DELETE'),
+      commentItem.locator('[data-test="comment-delete-button"]').click(),
+    ]);
   }
 
   async postComment(text: string) {

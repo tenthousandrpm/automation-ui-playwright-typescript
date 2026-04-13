@@ -5,6 +5,8 @@ import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { ArticlePage } from '../pages/ArticlePage';
 import { EditorPage } from '../pages/EditorPage';
+import { ProfilePage } from '../pages/ProfilePage';
+import { SettingsPage } from '../pages/SettingsPage';
 
 type Pages = {
   homePage: HomePage;
@@ -12,6 +14,8 @@ type Pages = {
   registerPage: RegisterPage;
   articlePage: ArticlePage;
   editorPage: EditorPage;
+  profilePage: ProfilePage;
+  settingsPage: SettingsPage;
 };
 
 type AuthFixtures = {
@@ -38,6 +42,14 @@ export const test = base.extend<Pages & AuthFixtures>({
 
   editorPage: async ({ page }, use) => {
     await use(new EditorPage(page));
+  },
+
+  profilePage: async ({ page }, use) => {
+    await use(new ProfilePage(page));
+  },
+
+  settingsPage: async ({ page }, use) => {
+    await use(new SettingsPage(page));
   },
 
   apiRequest: async ({}, use) => {

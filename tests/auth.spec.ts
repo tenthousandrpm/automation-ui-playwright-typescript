@@ -23,6 +23,14 @@ test.describe('Login', () => {
 });
 
 test.describe('Register', () => {
+  test('new user can register successfully @smoke', async ({ registerPage, page }) => {
+    const unique = Date.now();
+    await registerPage.goto();
+    await registerPage.register(`newuser${unique}`, `newuser${unique}@example.com`, 'password123');
+    await expect(page).not.toHaveURL('/register');
+    await expect(registerPage.navNewArticle).toBeVisible();
+  });
+
   test('duplicate email shows error @regression', async ({ registerPage }) => {
     await registerPage.goto();
     await registerPage.register('anotheruser', process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);

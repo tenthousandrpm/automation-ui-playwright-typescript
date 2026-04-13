@@ -42,6 +42,51 @@ test.describe('View Article', () => {
   });
 });
 
+test.describe('Edit Article', () => {
+  let slug: string;
+
+  test.beforeAll(async ({ apiRequest }) => {
+    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const article = await createArticle(apiRequest, token, {
+      title: `Edit Test Article ${Date.now()}`,
+      description: 'For editing',
+      body: 'Original body content',
+    });
+    slug = article.slug;
+  });
+
+  test('author can edit their article @regression', async ({ authenticatedPage, articlePage, editorPage, page }) => {
+    await articlePage.goto(slug);
+    await articlePage.editButton.click();
+    await expect(page).toHaveURL(/\/editor\//);
+    const updatedTitle = `Updated Title ${Date.now()}`;
+    await editorPage.titleInput.fill(updatedTitle);
+    await editorPage.submitButton.click();
+    await expect(page).toHaveURL(/\/article\//);
+    await expect(articlePage.title).toHaveText(updatedTitle);
+  });
+});
+
+test.describe('Delete Article', () => {
+  let slug: string;
+
+  test.beforeAll(async ({ apiRequest }) => {
+    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const article = await createArticle(apiRequest, token, {
+      title: `Delete Test Article ${Date.now()}`,
+      description: 'For deleting',
+      body: 'Article body content',
+    });
+    slug = article.slug;
+  });
+
+  test('author can delete their article @regression', async ({ authenticatedPage, articlePage, page }) => {
+    await articlePage.goto(slug);
+    await articlePage.clickDelete();
+    await expect(page).not.toHaveURL(/\/article\//);
+  });
+});
+
 test.describe('Favorite Article', () => {
   let slug: string;
 
@@ -65,5 +110,37 @@ test.describe('Favorite Article', () => {
     await expect(articlePage.favoriteButton).toContainText('(0)');
     await articlePage.clickFavorite();
     await expect(articlePage.unfavoriteButton).toContainText('(1)');
+  });
+
+  test('authenticated user can unfavorite an article @regression', async ({ authenticatedPage, articlePage }) => {
+    await articlePage.goto(slug);
+    // Ensure it is favorited first, then unfavorite
+    const isFavorited = await articlePage.unfavoriteButton.isVisible();
+    if (!isFavorited) {
+      await articlePage.clickFavorite();
+    }
+    await articlePage.clickUnfavorite();
+    await expect(articlePage.favoriteButton).toContainText('(0)');
+  });
+});
+
+test.describe('Article Tags', () => {
+  let slug: string;
+
+  test.beforeAll(async ({ apiRequest }) => {
+    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const article = await createArticle(apiRequest, token, {
+      title: `Tags Test Article ${Date.now()}`,
+      description: 'For tag display',
+      body: 'Article body content',
+      tags: ['playwright', 'typescript'],
+    });
+    slug = article.slug;
+  });
+
+  test('article page displays tags @regression', async ({ articlePage }) => {
+    await articlePage.goto(slug);
+    await expect(articlePage.tagList).toContainText('playwright');
+    await expect(articlePage.tagList).toContainText('typescript');
   });
 });
