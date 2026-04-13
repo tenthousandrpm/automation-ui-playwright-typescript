@@ -1,6 +1,6 @@
 [submodule "apps/frontend"]
 	path = apps/frontend
-	url = https://github.com/yurisldk/realworld-react-fsd
+	url = https://github.com/tenthousandrpm/realworld-react-fsd.git
 [submodule "apps/backend"]
 	path = apps/backend
-	url = https://github.com/c4ffein/realworld-django-ninja
+	url = https://github.com/tenthousandrpm/realworld-django-ninja.git
