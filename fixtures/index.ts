@@ -7,6 +7,7 @@ import { ArticlePage } from '../pages/ArticlePage';
 import { EditorPage } from '../pages/EditorPage';
 import { ProfilePage } from '../pages/ProfilePage';
 import { SettingsPage } from '../pages/SettingsPage';
+import { ApiClient } from './api-client';
 
 type Pages = {
   homePage: HomePage;
@@ -21,6 +22,8 @@ type Pages = {
 type AuthFixtures = {
   authenticatedPage: { token: string; username: string; email: string };
   apiRequest: APIRequestContext;
+  authenticatedApiClient: ApiClient;
+  authorApiClient: ApiClient;
 };
 
 type NavigationFixtures = {
@@ -65,6 +68,20 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
     const { context } = await createCsrfAwareApiContext();
     await use(context);
     await context.dispose();
+  },
+
+  authenticatedApiClient: async ({ apiRequest }, use) => {
+    const client = await ApiClient.create(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    await use(client);
+  },
+
+  authorApiClient: async ({ apiRequest }, use) => {
+    const client = await ApiClient.create(
+      apiRequest,
+      process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+    );
+    await use(client);
   },
 
   authenticatedPage: async ({ page, loginPage }, use) => {
