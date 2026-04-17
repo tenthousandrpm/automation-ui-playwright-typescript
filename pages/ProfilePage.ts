@@ -7,21 +7,12 @@ export class ProfilePage extends BasePage {
   }
 
   async goto(username: string) {
-    const url = this.page.url();
-    if (url.startsWith('http://localhost')) {
-      // Already on the app — use client-side navigation to preserve the Redux store.
-      // The nav contains a link to the current user's own profile; for other users
-      // navigate home first and click the author link in the feed.
-      const navLink = this.page.locator(`nav a[href="/profile/${username}/"]`);
-      if (await navLink.isVisible({ timeout: 500 }).catch(() => false)) {
-        await navLink.click();
-      } else {
-        await this.navHome.click();
-        await this.page.locator(`a[href="/profile/${username}/"]`).first().click();
-      }
+    const navLink = this.page.locator(`nav a[href="/profile/${username}/"]`);
+    if (await navLink.isVisible({ timeout: 500 }).catch(() => false)) {
+      await navLink.click();
     } else {
-      // Blank page — no session to preserve, full navigation is fine
-      await this.page.goto(`/profile/${username}/`);
+      await this.navHome.click();
+      await this.page.locator(`a[href="/profile/${username}/"]`).first().click();
     }
     await expect(this.page).toHaveURL(new RegExp(`/profile/${username}`));
   }

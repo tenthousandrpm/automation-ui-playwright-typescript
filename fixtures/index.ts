@@ -23,7 +23,16 @@ type AuthFixtures = {
   apiRequest: APIRequestContext;
 };
 
-export const test = base.extend<Pages & AuthFixtures>({
+type NavigationFixtures = {
+  _navigate: void;
+};
+
+export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
+  _navigate: [async ({ page }, use) => {
+    await page.goto('/');
+    await use();
+  }, { auto: true }],
+
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
   },
@@ -58,8 +67,8 @@ export const test = base.extend<Pages & AuthFixtures>({
     await context.dispose();
   },
 
-  authenticatedPage: async ({ page }, use) => {
-    await page.goto('/login');
+  authenticatedPage: async ({ page, loginPage }, use) => {
+    await loginPage.navSignIn.click();
 
     const [response] = await Promise.all([
       page.waitForResponse((r) => r.url().includes('/users/login') && r.status() === 200),

@@ -2,13 +2,24 @@ import { test, expect } from '../fixtures';
 import { getAuthToken, createArticle, followUser } from '../fixtures/api-helpers';
 
 test.describe('Home Page', () => {
+  let uniqueTag: string;
+
   test.beforeAll(async ({ apiRequest }) => {
     const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
-    await createArticle(apiRequest, token, {
-      title: `Home Feed Article ${Date.now()}`,
-      description: 'Seeded for home feed test',
-      body: 'Article body content',
-    });
+    uniqueTag = `testtag${Date.now()}`;
+    await Promise.all([
+      createArticle(apiRequest, token, {
+        title: `Home Feed Article ${Date.now()}`,
+        description: 'Seeded for home feed test',
+        body: 'Article body content',
+      }),
+      createArticle(apiRequest, token, {
+        title: `Tagged Article ${Date.now()}`,
+        description: 'Tagged article',
+        body: 'Body',
+        tags: [uniqueTag],
+      }),
+    ]);
   });
 
   test('global feed loads articles without error @smoke', async ({ homePage }) => {
@@ -21,17 +32,9 @@ test.describe('Home Page', () => {
     await expect(homePage.tagList).toBeVisible();
   });
 
-  test('clicking a tag filters the feed @regression', async ({ homePage, apiRequest }) => {
-    const tag = `testtag${Date.now()}`;
-    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
-    await createArticle(apiRequest, token, {
-      title: `Tagged Article ${Date.now()}`,
-      description: 'Tagged article',
-      body: 'Body',
-      tags: [tag],
-    });
+  test('clicking a tag filters the feed @regression', async ({ homePage }) => {
     await homePage.goto();
-    await homePage.clickTag(tag);
+    await homePage.clickTag(uniqueTag);
     await expect(homePage.articlePreviews.first()).toBeVisible();
   });
 });

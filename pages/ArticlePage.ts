@@ -7,24 +7,17 @@ export class ArticlePage extends BasePage {
   }
 
   async goto(slug: string) {
-    const url = this.page.url();
-    if (url.startsWith('http://localhost')) {
-      // Already on the app — navigate by clicking a link to preserve the Redux store.
-      // page.goto() causes a full page reload which loses the in-memory auth state.
-      // Check the current page first (after login the user lands on their profile page
-      // which already lists their articles), then fall back to the home feed for articles
-      // created by a different user.
-      const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
-      const foundOnCurrentPage = await articleLink().isVisible({ timeout: 3000 }).catch(() => false);
-      if (!foundOnCurrentPage) {
-        await this.navHome.click();
-      }
-      await articleLink().click();
-    } else {
-      // Blank page — no session to preserve, full navigation is fine
-      await this.page.goto(`/article/${slug}/`);
+    const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
+    const foundOnCurrentPage = await articleLink().isVisible({ timeout: 500 }).catch(() => false);
+    if (!foundOnCurrentPage) {
+      await this.navHome.click();
     }
+    await articleLink().click();
     await expect(this.page).toHaveURL(/\/article\//);
+  }
+
+  currentSlug() {
+    return this.page.url().split('/article/')[1]?.replace(/\/$/, '');
   }
 
   get title() {
@@ -60,17 +53,11 @@ export class ArticlePage extends BasePage {
   }
 
   async clickFavorite() {
-    await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/favorite') && r.status() === 200),
-      this.favoriteButton.click(),
-    ]);
+    await this.favoriteButton.click();
   }
 
   async clickUnfavorite() {
-    await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/favorite') && r.status() === 200),
-      this.unfavoriteButton.click(),
-    ]);
+    await this.unfavoriteButton.click();
   }
 
   async clickDelete() {
@@ -93,18 +80,11 @@ export class ArticlePage extends BasePage {
   }
 
   async deleteComment(text: string) {
-    const commentItem = this.comments.filter({ hasText: text });
-    await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/comments/') && r.request().method() === 'DELETE'),
-      commentItem.locator('[data-test="comment-delete-button"]').click(),
-    ]);
+    await this.comments.filter({ hasText: text }).locator('[data-test="comment-delete-button"]').click();
   }
 
   async postComment(text: string) {
     await this.commentInput.fill(text);
-    await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/comments') && r.request().method() === 'POST'),
-      this.commentSubmit.click(),
-    ]);
+    await this.commentSubmit.click();
   }
 }

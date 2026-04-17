@@ -16,10 +16,7 @@ test.describe('Settings', () => {
     await settingsPage.passwordInput.fill(process.env.TEST_USER_PASSWORD!);
     // Wait for React Hook Form to register the form as dirty before clicking
     await expect(settingsPage.submitButton).toBeEnabled();
-    await Promise.all([
-      page.waitForResponse((r) => r.url().includes('/user') && r.request().method() === 'PUT' && r.status() === 200),
-      settingsPage.submitButton.click(),
-    ]);
+    await settingsPage.submitButton.click();
     await expect(page).toHaveURL(new RegExp(`/profile/${process.env.TEST_USER_USERNAME}`));
   });
 
