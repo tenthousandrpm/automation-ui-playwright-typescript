@@ -9,7 +9,7 @@ export class HomePage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto(this.url);
+    await this.navHome.click();
     await expect(this.page).toHaveURL(/\/((\?.*)?$)/);
   }
 

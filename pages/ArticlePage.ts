@@ -7,16 +7,17 @@ export class ArticlePage extends BasePage {
   }
 
   async goto(slug: string) {
-    const url = this.page.url();
-    if (url.startsWith('http://localhost')) {
-      // Already on the app — use client-side navigation to preserve the Redux store
+    const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
+    const foundOnCurrentPage = await articleLink().isVisible({ timeout: 500 }).catch(() => false);
+    if (!foundOnCurrentPage) {
       await this.navHome.click();
-      await this.page.locator(`a[href^="/article/${slug}"]`).first().click();
-    } else {
-      // Blank page — no session to preserve, full navigation is fine
-      await this.page.goto(`/article/${slug}`);
     }
+    await articleLink().click();
     await expect(this.page).toHaveURL(/\/article\//);
+  }
+
+  currentSlug() {
+    return this.page.url().split('/article/')[1]?.replace(/\/$/, '');
   }
 
   get title() {
@@ -32,7 +33,15 @@ export class ArticlePage extends BasePage {
   }
 
   get editButton() {
-    return this.page.locator('[data-test="article-edit-button"]');
+    return this.page.locator('.banner [data-test="article-edit-button"]');
+  }
+
+  get deleteButton() {
+    return this.page.locator('.banner [data-test="article-delete-button"]');
+  }
+
+  get tagList() {
+    return this.page.locator('[data-test="article-body"] .tag-list');
   }
 
   get favoriteButton() {
@@ -44,9 +53,17 @@ export class ArticlePage extends BasePage {
   }
 
   async clickFavorite() {
+    await this.favoriteButton.click();
+  }
+
+  async clickUnfavorite() {
+    await this.unfavoriteButton.click();
+  }
+
+  async clickDelete() {
     await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/favorite') && r.status() === 200),
-      this.favoriteButton.click(),
+      this.page.waitForURL(/\//),
+      this.deleteButton.click(),
     ]);
   }
 
@@ -62,11 +79,12 @@ export class ArticlePage extends BasePage {
     return this.page.locator('[data-test="comment-item"]');
   }
 
+  async deleteComment(text: string) {
+    await this.comments.filter({ hasText: text }).locator('[data-test="comment-delete-button"]').click();
+  }
+
   async postComment(text: string) {
     await this.commentInput.fill(text);
-    await Promise.all([
-      this.page.waitForResponse((r) => r.url().includes('/comments') && r.request().method() === 'POST'),
-      this.commentSubmit.click(),
-    ]);
+    await this.commentSubmit.click();
   }
 }

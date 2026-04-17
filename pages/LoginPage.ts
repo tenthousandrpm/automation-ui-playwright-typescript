@@ -2,15 +2,8 @@ import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
-  readonly url = '/login';
-
   constructor(page: Page) {
     super(page);
-  }
-
-  async goto() {
-    await this.page.goto(this.url);
-    await expect(this.page).toHaveURL(/\/login/);
   }
 
   get emailInput() {

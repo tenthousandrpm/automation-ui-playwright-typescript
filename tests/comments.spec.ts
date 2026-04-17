@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures';
-import { getAuthToken, createArticle } from '../fixtures/api-helpers';
+import { getAuthToken, createArticle, createComment } from '../fixtures/api-helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -30,5 +30,20 @@ test.describe('Comments', () => {
     await articlePage.goto(slug);
     await expect(page.getByText('Sign in or sign up to add comments')).toBeVisible();
     await expect(articlePage.commentInput).not.toBeVisible();
+  });
+
+  test('authenticated user can delete their comment @regression', async ({
+    authenticatedPage,
+    articlePage,
+    apiRequest,
+  }) => {
+    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const commentText = `Deletable comment ${Date.now()}`;
+    await createComment(apiRequest, token, slug, commentText);
+    await articlePage.goto(slug);
+    // Wait for the specific comment to appear before interacting
+    await expect(articlePage.comments.filter({ hasText: commentText })).toBeVisible();
+    await articlePage.deleteComment(commentText);
+    await expect(articlePage.comments.filter({ hasText: commentText })).not.toBeVisible();
   });
 });

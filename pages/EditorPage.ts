@@ -39,11 +39,17 @@ export class EditorPage extends BasePage {
     return this.page.locator('[data-test="article-error"] li');
   }
 
-  async publish(article: { title: string; description: string; body: string; tags?: string }) {
+  async publish(article: { title: string; description: string; body: string; tags?: string | string[] }) {
     await this.titleInput.fill(article.title);
     await this.descriptionInput.fill(article.description);
     await this.bodyInput.fill(article.body);
-    if (article.tags) await this.tagsInput.fill(article.tags);
+    if (article.tags) {
+      const tags = Array.isArray(article.tags) ? article.tags : [article.tags];
+      for (const tag of tags) {
+        await this.tagsInput.pressSequentially(tag);
+        await this.tagsInput.press(',');
+      }
+    }
     await this.submitButton.click();
   }
 }
