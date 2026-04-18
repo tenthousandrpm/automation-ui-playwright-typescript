@@ -2,7 +2,11 @@
   "name": "automation-ui-playwright-typescript",
   "version": "1.0.0",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug"
   },
   "devDependencies": {
     "@playwright/test": "1.59.1",

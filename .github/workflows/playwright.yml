@@ -61,7 +61,7 @@ jobs:
             -e ARTICLE_AUTHOR_PASSWORD=${{ secrets.ARTICLE_AUTHOR_PASSWORD || 'password123' }} \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             -v ${{ github.workspace }}/test-results:/app/test-results \
-            playwright-tests
+            playwright-tests npm run test:smoke
 
       - name: Upload Playwright report
         if: always()

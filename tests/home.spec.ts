@@ -22,17 +22,17 @@ test.describe('Home Page', () => {
     ]);
   });
 
-  test('global feed loads articles without error @smoke', async ({ homePage }) => {
+  test('global feed loads articles without error', { tag: '@smoke' }, async ({ homePage }) => {
     await homePage.goto();
     await expect(homePage.articlePreviews.first()).toBeVisible();
   });
 
-  test('tag list is visible on home page @regression', async ({ homePage }) => {
+  test('tag list is visible on home page', { tag: '@regression' }, async ({ homePage }) => {
     await homePage.goto();
     await expect(homePage.tagList).toBeVisible();
   });
 
-  test('clicking a tag filters the feed @regression', async ({ homePage }) => {
+  test('clicking a tag filters the feed', { tag: '@regression' }, async ({ homePage }) => {
     await homePage.goto();
     await homePage.clickTag(uniqueTag);
     await expect(homePage.articlePreviews.first()).toBeVisible();
@@ -62,12 +62,12 @@ test.describe('Your Feed', () => {
     });
   });
 
-  test('authenticated user sees Your Feed tab @smoke', async ({ authenticatedPage, homePage }) => {
+  test('authenticated user sees Your Feed tab', { tag: '@smoke' }, async ({ authenticatedPage, homePage }) => {
     await homePage.goto();
     await expect(homePage.yourFeedTab).toBeVisible();
   });
 
-  test('Your Feed shows articles from followed users @regression', async ({ authenticatedPage, homePage }) => {
+  test('Your Feed shows articles from followed users', { tag: '@regression' }, async ({ authenticatedPage, homePage }) => {
     await homePage.goto();
     await homePage.clickYourFeed();
     await expect(homePage.articlePreviews.first()).toBeVisible();

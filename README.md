@@ -48,8 +48,18 @@ docker compose up --build
 ```bash
 npm install
 npx playwright install
-npx playwright test
+npm test
 ```
+
+### Named scripts
+
+| Script | What it runs |
+|---|---|
+| `npm test` | All tests |
+| `npm run test:smoke` | `@smoke` tests only |
+| `npm run test:regression` | `@regression` tests only |
+| `npm run test:headed` | All tests in headed mode |
+| `npm run test:debug` | All tests in debug mode |
 
 ### Run a specific browser
 
@@ -66,6 +76,13 @@ npx playwright show-report
 ```
 
 Traces, screenshots, and videos are captured automatically on failure.
+
+## Test Tagging
+
+Tests are tagged with `@smoke` or `@regression` using Playwright's annotation API:
+
+- **`@smoke`** — critical happy-path tests; run on every CI push/PR
+- **`@regression`** — broader coverage; run locally or on a scheduled basis
 
 ## Configuration
 
@@ -92,7 +109,7 @@ The framework ships with a GitHub Actions workflow (`.github/workflows/playwrigh
 
 1. Checks out the repo with submodules
 2. Spins up the full stack via Docker Compose (when targeting localhost)
-3. Builds and runs the Playwright container
+3. Builds and runs the Playwright container (smoke tests only)
 4. Uploads the HTML report as a downloadable artifact
 
 ### Running against a different target
