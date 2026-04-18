@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Settings', () => {
-  test('settings page pre-fills current user data', { tag: '@smoke' }, async ({ authenticatedPage, settingsPage, page }) => {
+  test('settings page pre-fills current user data', { tag: '@smoke' }, async ({ authenticatedPage, settingsPage }) => {
     await settingsPage.goto();
     await expect(settingsPage.usernameInput).toHaveValue(process.env.TEST_USER_USERNAME!);
     await expect(settingsPage.emailInput).toHaveValue(process.env.TEST_USER_EMAIL!);

@@ -4,6 +4,19 @@ import { getAuthToken, createArticle } from '../fixtures/api-helpers';
 test.describe('Profile Page', () => {
   const authorUsername = process.env.ARTICLE_AUTHOR_USERNAME || 'articleauthor';
 
+  test.beforeAll(async ({ apiRequest }) => {
+    const token = await getAuthToken(
+      apiRequest,
+      process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+    );
+    await createArticle(apiRequest, token, {
+      title: `Profile Page Setup Article ${Date.now()}`,
+      description: 'For profile page test setup',
+      body: 'Article body content',
+    });
+  });
+
   test('profile page shows username', { tag: '@smoke' }, async ({ profilePage }) => {
     await profilePage.goto(authorUsername);
     await expect(profilePage.username).toHaveText(authorUsername);

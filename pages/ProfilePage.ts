@@ -12,7 +12,9 @@ export class ProfilePage extends BasePage {
       await navLink.click();
     } else {
       await this.navHome.click();
-      await this.page.locator(`a[href="/profile/${username}/"]`).first().click();
+      const authorLink = this.page.locator(`a[href="/profile/${username}/"]`).first();
+      await authorLink.waitFor({ state: 'visible' });
+      await authorLink.click();
     }
     await expect(this.page).toHaveURL(new RegExp(`/profile/${username}`));
   }

@@ -60,6 +60,10 @@ npm test
 | `npm run test:regression` | `@regression` tests only |
 | `npm run test:headed` | All tests in headed mode |
 | `npm run test:debug` | All tests in debug mode |
+| `npm run lint` | Check for lint errors |
+| `npm run lint:fix` | Auto-fix lint errors |
+| `npm run format` | Format all files with Prettier |
+| `npm run format:check` | Check formatting without writing |
 
 ### Run a specific browser
 
@@ -142,3 +146,4 @@ docker run --rm \
 - **Custom fixtures** — `authenticatedPage` logs in through the UI and navigates via nav links to preserve the Redux store across page transitions
 - **Typed config** — `config/env.ts` is the single source of truth for environment variables
 - **Portable test runner** — the `Dockerfile` packages the entire framework; point `BASE_URL` at any target
+- **Linting & formatting** — ESLint + Prettier enforce consistent code style; run `npm run lint` and `npm run format:check` in CI
