@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Create Article', () => {
-  test('authenticated user can publish an article @smoke', async ({ authenticatedPage, editorPage, page }) => {
+  test('authenticated user can publish an article', { tag: '@smoke' }, async ({ authenticatedPage, editorPage, page }) => {
     const title = `Test Article ${Date.now()}`;
     await editorPage.goto();
     await editorPage.publish({
@@ -14,14 +14,14 @@ test.describe('Create Article', () => {
     await expect(page.locator('[data-test="article-title"]')).toHaveText(title);
   });
 
-  test('unauthenticated user is redirected away from editor @regression', async ({ page }) => {
+  test('unauthenticated user is redirected away from editor', { tag: '@regression' }, async ({ page }) => {
     await page.goto('/editor');
     await expect(page).not.toHaveURL(/\/editor/);
   });
 });
 
 test.describe('View Article', () => {
-  test('article page shows title and body @smoke', async ({ authenticatedPage, editorPage, articlePage }) => {
+  test('article page shows title and body', { tag: '@smoke' }, async ({ authenticatedPage, editorPage, articlePage }) => {
     await editorPage.goto();
     await editorPage.publish({
       title: `View Test Article ${Date.now()}`,
@@ -34,7 +34,7 @@ test.describe('View Article', () => {
 });
 
 test.describe('Edit Article', () => {
-  test('author can edit their article @regression', async ({ authenticatedPage, editorPage, articlePage, page }) => {
+  test('author can edit their article', { tag: '@regression' }, async ({ authenticatedPage, editorPage, articlePage, page }) => {
     await editorPage.goto();
     await editorPage.publish({
       title: `Edit Test Article ${Date.now()}`,
@@ -52,7 +52,7 @@ test.describe('Edit Article', () => {
 });
 
 test.describe('Delete Article', () => {
-  test('author can delete their article @regression', async ({ authenticatedPage, editorPage, articlePage, page }) => {
+  test('author can delete their article', { tag: '@regression' }, async ({ authenticatedPage, editorPage, articlePage, page }) => {
     await editorPage.goto();
     await editorPage.publish({
       title: `Delete Test Article ${Date.now()}`,
@@ -65,7 +65,7 @@ test.describe('Delete Article', () => {
 });
 
 test.describe('Favorite Article', () => {
-  test('authenticated user can favorite and unfavorite an article @regression', async ({
+  test('authenticated user can favorite and unfavorite an article', { tag: '@regression' }, async ({
     loginPage,
     editorPage,
     settingsPage,
@@ -103,7 +103,7 @@ test.describe('Favorite Article', () => {
 });
 
 test.describe('Article Tags', () => {
-  test('article page displays tags @regression', async ({ authenticatedPage, editorPage, articlePage }) => {
+  test('article page displays tags', { tag: '@regression' }, async ({ authenticatedPage, editorPage, articlePage }) => {
     await editorPage.goto();
     await editorPage.publish({
       title: `Tags Test Article ${Date.now()}`,

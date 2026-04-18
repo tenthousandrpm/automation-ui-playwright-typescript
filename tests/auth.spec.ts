@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Login', () => {
-  test('successful login shows authenticated nav links @smoke', async ({ loginPage, page }) => {
+  test('successful login shows authenticated nav links', { tag: '@smoke' }, async ({ loginPage, page }) => {
     await loginPage.navSignIn.click();
     await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
     await expect(page).not.toHaveURL('/login');
@@ -9,13 +9,13 @@ test.describe('Login', () => {
     await expect(loginPage.navSettings).toBeVisible();
   });
 
-  test('wrong password shows error message @regression', async ({ loginPage }) => {
+  test('wrong password shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
     await loginPage.login(process.env.TEST_USER_EMAIL!, 'wrongpassword');
     await expect(loginPage.errorMessages).toContainText('invalid');
   });
 
-  test('unknown email shows error message @regression', async ({ loginPage }) => {
+  test('unknown email shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
     await loginPage.login('nobody@nowhere.com', 'password123');
     await expect(loginPage.errorMessages).toContainText('invalid');
@@ -23,7 +23,7 @@ test.describe('Login', () => {
 });
 
 test.describe('Register', () => {
-  test('new user can register successfully @smoke', async ({ registerPage, page }) => {
+  test('new user can register successfully', { tag: '@smoke' }, async ({ registerPage, page }) => {
     const unique = Date.now();
     await registerPage.navSignUp.click();
     await registerPage.register(`newuser${unique}`, `newuser${unique}@example.com`, 'password123');
@@ -31,13 +31,13 @@ test.describe('Register', () => {
     await expect(registerPage.navNewArticle).toBeVisible();
   });
 
-  test('duplicate email shows error @regression', async ({ registerPage }) => {
+  test('duplicate email shows error', { tag: '@regression' }, async ({ registerPage }) => {
     await registerPage.navSignUp.click();
     await registerPage.register('anotheruser', process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
     await expect(registerPage.errorMessages).toBeVisible();
   });
 
-  test('duplicate username shows error @regression', async ({ registerPage }) => {
+  test('duplicate username shows error', { tag: '@regression' }, async ({ registerPage }) => {
     await registerPage.navSignUp.click();
     await registerPage.register(
       process.env.TEST_USER_USERNAME!,
@@ -49,7 +49,7 @@ test.describe('Register', () => {
 });
 
 test.describe('Logout', () => {
-  test('authenticated user can sign out @smoke', async ({ authenticatedPage, page }) => {
+  test('authenticated user can sign out', { tag: '@smoke' }, async ({ authenticatedPage, page }) => {
     await page.locator('nav').getByRole('link', { name: 'Settings' }).click();
     await expect(page).toHaveURL(/\/settings/);
     await page.getByRole('button', { name: 'Or click here to logout' }).click();

@@ -16,14 +16,14 @@ test.describe('Comments', () => {
     slug = article.slug;
   });
 
-  test('authenticated user can post a comment @smoke', async ({ authenticatedPage, articlePage }) => {
+  test('authenticated user can post a comment', { tag: '@smoke' }, async ({ authenticatedPage, articlePage }) => {
     const comment = `Test comment ${Date.now()}`;
     await articlePage.goto(slug);
     await articlePage.postComment(comment);
     await expect(articlePage.comments.first()).toContainText(comment);
   });
 
-  test('unauthenticated user sees sign in prompt instead of comment form @regression', async ({
+  test('unauthenticated user sees sign in prompt instead of comment form', { tag: '@regression' }, async ({
     page,
     articlePage,
   }) => {
@@ -32,7 +32,7 @@ test.describe('Comments', () => {
     await expect(articlePage.commentInput).not.toBeVisible();
   });
 
-  test('authenticated user can delete their comment @regression', async ({
+  test('authenticated user can delete their comment', { tag: '@regression' }, async ({
     authenticatedPage,
     articlePage,
     apiRequest,

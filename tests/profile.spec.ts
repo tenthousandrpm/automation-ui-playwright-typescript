@@ -4,12 +4,12 @@ import { getAuthToken, createArticle } from '../fixtures/api-helpers';
 test.describe('Profile Page', () => {
   const authorUsername = process.env.ARTICLE_AUTHOR_USERNAME || 'articleauthor';
 
-  test('profile page shows username @smoke', async ({ profilePage }) => {
+  test('profile page shows username', { tag: '@smoke' }, async ({ profilePage }) => {
     await profilePage.goto(authorUsername);
     await expect(profilePage.username).toHaveText(authorUsername);
   });
 
-  test('My Articles tab shows articles authored by the user @regression', async ({ profilePage, apiRequest }) => {
+  test('My Articles tab shows articles authored by the user', { tag: '@regression' }, async ({ profilePage, apiRequest }) => {
     const token = await getAuthToken(
       apiRequest,
       process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
@@ -25,12 +25,12 @@ test.describe('Profile Page', () => {
     await expect(profilePage.articlePreviews.first()).toBeVisible();
   });
 
-  test('Favorited Articles tab is visible @regression', async ({ profilePage }) => {
+  test('Favorited Articles tab is visible', { tag: '@regression' }, async ({ profilePage }) => {
     await profilePage.goto(authorUsername);
     await expect(profilePage.favoritedArticlesTab).toBeVisible();
   });
 
-  test('own profile shows Edit Profile Settings instead of follow button @regression', async ({
+  test('own profile shows Edit Profile Settings instead of follow button', { tag: '@regression' }, async ({
     authenticatedPage,
     profilePage,
   }) => {
@@ -58,7 +58,7 @@ test.describe('Follow / Unfollow', () => {
     });
   });
 
-  test('authenticated user can follow and unfollow another user @regression', async ({
+  test('authenticated user can follow and unfollow another user', { tag: '@regression' }, async ({
     authenticatedPage,
     profilePage,
   }) => {
