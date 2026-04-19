@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Create Article', () => {
-  test('authenticated user can publish an article', { tag: '@smoke' }, async ({ authenticatedPage, editorPage, page }) => {
+  test('authenticated user can publish an article', { tag: '@smoke' }, async ({ authenticatedPage, editorPage, articlePage, page }) => {
     const title = `Test Article ${Date.now()}`;
     await editorPage.goto();
     await editorPage.publish({
@@ -11,7 +11,7 @@ test.describe('Create Article', () => {
       tags: 'test',
     });
     await expect(page).toHaveURL(/\/article\//);
-    await expect(page.locator('[data-test="article-title"]')).toHaveText(title);
+    await expect(articlePage.title).toHaveText(title);
   });
 
   test('unauthenticated user is redirected away from editor', { tag: '@regression' }, async ({ page }) => {
