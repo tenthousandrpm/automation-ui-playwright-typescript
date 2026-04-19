@@ -6,7 +6,10 @@ import { config } from './env';
  * X-CSRFToken header, so all POST/PUT/DELETE requests work without manual
  * token handling in each test or helper.
  */
-export async function createCsrfAwareApiContext(): Promise<{ context: APIRequestContext; csrfToken: string }> {
+export async function createCsrfAwareApiContext(): Promise<{
+  context: APIRequestContext;
+  csrfToken: string;
+}> {
   const tempCtx = await baseRequest.newContext({ baseURL: config.serverUrl });
   await tempCtx.get('/admin/login/');
   const state = await tempCtx.storageState();

@@ -1,13 +1,17 @@
 import { test, expect } from '../fixtures';
 
 test.describe('Login', () => {
-  test('successful login shows authenticated nav links', { tag: '@smoke' }, async ({ loginPage, page }) => {
-    await loginPage.navSignIn.click();
-    await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
-    await expect(page).not.toHaveURL('/login');
-    await expect(loginPage.navNewArticle).toBeVisible();
-    await expect(loginPage.navSettings).toBeVisible();
-  });
+  test(
+    'successful login shows authenticated nav links',
+    { tag: '@smoke' },
+    async ({ loginPage, page }) => {
+      await loginPage.navSignIn.click();
+      await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+      await expect(page).not.toHaveURL('/login');
+      await expect(loginPage.navNewArticle).toBeVisible();
+      await expect(loginPage.navSettings).toBeVisible();
+    }
+  );
 
   test('wrong password shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
@@ -33,7 +37,11 @@ test.describe('Register', () => {
 
   test('duplicate email shows error', { tag: '@regression' }, async ({ registerPage }) => {
     await registerPage.navSignUp.click();
-    await registerPage.register('anotheruser', process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    await registerPage.register(
+      'anotheruser',
+      process.env.TEST_USER_EMAIL!,
+      process.env.TEST_USER_PASSWORD!
+    );
     await expect(registerPage.errorMessages).toBeVisible();
   });
 
@@ -42,16 +50,20 @@ test.describe('Register', () => {
     await registerPage.register(
       process.env.TEST_USER_USERNAME!,
       'unique@example.com',
-      process.env.TEST_USER_PASSWORD!,
+      process.env.TEST_USER_PASSWORD!
     );
     await expect(registerPage.errorMessages).toBeVisible();
   });
 });
 
 test.describe('Logout', () => {
-  test('authenticated user can sign out', { tag: '@smoke' }, async ({ authenticatedPage, settingsPage }) => {
-    await settingsPage.goto();
-    await settingsPage.logoutButton.click();
-    await expect(settingsPage.navSignIn).toBeVisible();
-  });
+  test(
+    'authenticated user can sign out',
+    { tag: '@smoke' },
+    async ({ authenticatedPage, settingsPage }) => {
+      await settingsPage.goto();
+      await settingsPage.logoutButton.click();
+      await expect(settingsPage.navSignIn).toBeVisible();
+    }
+  );
 });
