@@ -39,7 +39,12 @@ export class EditorPage extends BasePage {
     return this.page.locator('[data-test="article-error"] li');
   }
 
-  async publish(article: { title: string; description: string; body: string; tags?: string | string[] }) {
+  async publish(article: {
+    title: string;
+    description: string;
+    body: string;
+    tags?: string | string[];
+  }) {
     await this.titleInput.fill(article.title);
     await this.descriptionInput.fill(article.description);
     await this.bodyInput.fill(article.body);

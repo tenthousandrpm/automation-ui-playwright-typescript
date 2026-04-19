@@ -8,7 +8,9 @@ export class ArticlePage extends BasePage {
 
   async goto(slug: string) {
     const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
-    const foundOnCurrentPage = await articleLink().isVisible({ timeout: 500 }).catch(() => false);
+    const foundOnCurrentPage = await articleLink()
+      .isVisible({ timeout: 500 })
+      .catch(() => false);
     if (!foundOnCurrentPage) {
       await this.navHome.click();
     }
@@ -61,10 +63,7 @@ export class ArticlePage extends BasePage {
   }
 
   async clickDelete() {
-    await Promise.all([
-      this.page.waitForURL(/\//),
-      this.deleteButton.click(),
-    ]);
+    await Promise.all([this.page.waitForURL(/\//), this.deleteButton.click()]);
   }
 
   get commentInput() {
@@ -80,7 +79,10 @@ export class ArticlePage extends BasePage {
   }
 
   async deleteComment(text: string) {
-    await this.comments.filter({ hasText: text }).locator('[data-test="comment-delete-button"]').click();
+    await this.comments
+      .filter({ hasText: text })
+      .locator('[data-test="comment-delete-button"]')
+      .click();
   }
 
   async postComment(text: string) {

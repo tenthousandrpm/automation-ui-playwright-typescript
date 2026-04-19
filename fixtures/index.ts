@@ -31,10 +31,13 @@ type NavigationFixtures = {
 };
 
 export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
-  _navigate: [async ({ page }, use) => {
-    await page.goto('/');
-    await use();
-  }, { auto: true }],
+  _navigate: [
+    async ({ page }, use) => {
+      await page.goto('/');
+      await use();
+    },
+    { auto: true },
+  ],
 
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -71,7 +74,11 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
   },
 
   authenticatedApiClient: async ({ apiRequest }, use) => {
-    const client = await ApiClient.create(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const client = await ApiClient.create(
+      apiRequest,
+      process.env.TEST_USER_EMAIL!,
+      process.env.TEST_USER_PASSWORD!
+    );
     await use(client);
   },
 
@@ -79,7 +86,7 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
     const client = await ApiClient.create(
       apiRequest,
       process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await use(client);
   },

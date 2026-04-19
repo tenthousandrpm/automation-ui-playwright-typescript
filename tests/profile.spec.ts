@@ -8,7 +8,7 @@ test.describe('Profile Page', () => {
     const token = await getAuthToken(
       apiRequest,
       process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, token, {
       title: `Profile Page Setup Article ${Date.now()}`,
@@ -22,35 +22,40 @@ test.describe('Profile Page', () => {
     await expect(profilePage.username).toHaveText(authorUsername);
   });
 
-  test('My Articles tab shows articles authored by the user', { tag: '@regression' }, async ({ profilePage, apiRequest }) => {
-    const token = await getAuthToken(
-      apiRequest,
-      process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
-    );
-    await createArticle(apiRequest, token, {
-      title: `Profile Page Article ${Date.now()}`,
-      description: 'For profile page test',
-      body: 'Article body content',
-    });
-    await profilePage.goto(authorUsername);
-    await profilePage.myArticlesTab.click();
-    await expect(profilePage.articlePreviews.first()).toBeVisible();
-  });
+  test(
+    'My Articles tab shows articles authored by the user',
+    { tag: '@regression' },
+    async ({ profilePage, apiRequest }) => {
+      const token = await getAuthToken(
+        apiRequest,
+        process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
+        process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
+      );
+      await createArticle(apiRequest, token, {
+        title: `Profile Page Article ${Date.now()}`,
+        description: 'For profile page test',
+        body: 'Article body content',
+      });
+      await profilePage.goto(authorUsername);
+      await profilePage.myArticlesTab.click();
+      await expect(profilePage.articlePreviews.first()).toBeVisible();
+    }
+  );
 
   test('Favorited Articles tab is visible', { tag: '@regression' }, async ({ profilePage }) => {
     await profilePage.goto(authorUsername);
     await expect(profilePage.favoritedArticlesTab).toBeVisible();
   });
 
-  test('own profile shows Edit Profile Settings instead of follow button', { tag: '@regression' }, async ({
-    authenticatedPage,
-    profilePage,
-  }) => {
-    await profilePage.goto(process.env.TEST_USER_USERNAME!);
-    await expect(profilePage.followButton).not.toBeVisible();
-    await expect(profilePage.unfollowButton).not.toBeVisible();
-  });
+  test(
+    'own profile shows Edit Profile Settings instead of follow button',
+    { tag: '@regression' },
+    async ({ authenticatedPage, profilePage }) => {
+      await profilePage.goto(process.env.TEST_USER_USERNAME!);
+      await expect(profilePage.followButton).not.toBeVisible();
+      await expect(profilePage.unfollowButton).not.toBeVisible();
+    }
+  );
 });
 
 test.describe('Follow / Unfollow', () => {
@@ -62,7 +67,7 @@ test.describe('Follow / Unfollow', () => {
     const token = await getAuthToken(
       apiRequest,
       process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, token, {
       title: `Follow Test Article ${Date.now()}`,
@@ -71,16 +76,17 @@ test.describe('Follow / Unfollow', () => {
     });
   });
 
-  test('authenticated user can follow and unfollow another user', { tag: '@regression' }, async ({
-    authenticatedPage,
-    profilePage,
-  }) => {
-    await profilePage.goto(authorUsername);
+  test(
+    'authenticated user can follow and unfollow another user',
+    { tag: '@regression' },
+    async ({ authenticatedPage, profilePage }) => {
+      await profilePage.goto(authorUsername);
 
-    await profilePage.clickUnfollow();
-    await expect(profilePage.followButton).toBeVisible();
+      await profilePage.clickUnfollow();
+      await expect(profilePage.followButton).toBeVisible();
 
-    await profilePage.clickFollow();
-    await expect(profilePage.unfollowButton).toBeVisible();
-  });
+      await profilePage.clickFollow();
+      await expect(profilePage.unfollowButton).toBeVisible();
+    }
+  );
 });

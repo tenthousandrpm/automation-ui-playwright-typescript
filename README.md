@@ -38,8 +38,8 @@ docker compose up --build
 ```
 
 | Service  | URL                        |
-|----------|----------------------------|
-| Frontend | http://localhost:4100       |
+| -------- | -------------------------- |
+| Frontend | http://localhost:4100      |
 | API      | http://localhost:8000/api  |
 | API Docs | http://localhost:8000/docs |
 
@@ -53,17 +53,17 @@ npm test
 
 ### Named scripts
 
-| Script | What it runs |
-|---|---|
-| `npm test` | All tests |
-| `npm run test:smoke` | `@smoke` tests only |
-| `npm run test:regression` | `@regression` tests only |
-| `npm run test:headed` | All tests in headed mode |
-| `npm run test:debug` | All tests in debug mode |
-| `npm run lint` | Check for lint errors |
-| `npm run lint:fix` | Auto-fix lint errors |
-| `npm run format` | Format all files with Prettier |
-| `npm run format:check` | Check formatting without writing |
+| Script                    | What it runs                     |
+| ------------------------- | -------------------------------- |
+| `npm test`                | All tests                        |
+| `npm run test:smoke`      | `@smoke` tests only              |
+| `npm run test:regression` | `@regression` tests only         |
+| `npm run test:headed`     | All tests in headed mode         |
+| `npm run test:debug`      | All tests in debug mode          |
+| `npm run lint`            | Check for lint errors            |
+| `npm run lint:fix`        | Auto-fix lint errors             |
+| `npm run format`          | Format all files with Prettier   |
+| `npm run format:check`    | Check formatting without writing |
 
 ### Run a specific browser
 
@@ -92,29 +92,30 @@ Tests are tagged with `@smoke` or `@regression` using Playwright's annotation AP
 
 Copy `.env.example` to `.env` and adjust as needed.
 
-| Variable              | Default                         | Description                          |
-|-----------------------|---------------------------------|--------------------------------------|
-| `BASE_URL`            | `http://localhost:4100`         | Frontend URL for Playwright          |
-| `API_URL`             | `http://localhost:8000/api`     | Backend API URL for fixtures         |
-| `HEADLESS`            | `true`                          | Run browsers headlessly              |
-| `TEST_USER_USERNAME`  | `testuser`                      | Test user seeded before suite runs   |
-| `TEST_USER_EMAIL`     | `test@example.com`              | Test user seeded before suite runs   |
-| `TEST_USER_PASSWORD`  | `password123`                   | Test user seeded before suite runs   |
-| `API_PORT`            | `8000`                          | Backend port                         |
-| `FRONTEND_PORT`       | `4100`                          | Frontend port                        |
-| `DB_USER`             | `postgres`                      | PostgreSQL user                      |
-| `DB_PASSWORD`         | `postgres`                      | PostgreSQL password                  |
-| `DB_NAME`             | `realworld`                     | PostgreSQL database name             |
-| `SECRET_KEY`          | `dev-secret-key-...`            | Django secret key                    |
+| Variable             | Default                     | Description                        |
+| -------------------- | --------------------------- | ---------------------------------- |
+| `BASE_URL`           | `http://localhost:4100`     | Frontend URL for Playwright        |
+| `API_URL`            | `http://localhost:8000/api` | Backend API URL for fixtures       |
+| `HEADLESS`           | `true`                      | Run browsers headlessly            |
+| `TEST_USER_USERNAME` | `testuser`                  | Test user seeded before suite runs |
+| `TEST_USER_EMAIL`    | `test@example.com`          | Test user seeded before suite runs |
+| `TEST_USER_PASSWORD` | `password123`               | Test user seeded before suite runs |
+| `API_PORT`           | `8000`                      | Backend port                       |
+| `FRONTEND_PORT`      | `4100`                      | Frontend port                      |
+| `DB_USER`            | `postgres`                  | PostgreSQL user                    |
+| `DB_PASSWORD`        | `postgres`                  | PostgreSQL password                |
+| `DB_NAME`            | `realworld`                 | PostgreSQL database name           |
+| `SECRET_KEY`         | `dev-secret-key-...`        | Django secret key                  |
 
 ## CI
 
 The framework ships with a GitHub Actions workflow (`.github/workflows/playwright.yml`) that:
 
-1. Checks out the repo with submodules
-2. Spins up the full stack via Docker Compose (when targeting localhost)
-3. Builds and runs the Playwright container (smoke tests only)
-4. Uploads the HTML report as a downloadable artifact
+1. Runs ESLint and Prettier checks (tests are blocked if this fails)
+2. Checks out the repo with submodules
+3. Spins up the full stack via Docker Compose (when targeting localhost)
+4. Builds and runs the Playwright container (smoke tests only)
+5. Uploads the HTML report as a downloadable artifact
 
 ### Running against a different target
 

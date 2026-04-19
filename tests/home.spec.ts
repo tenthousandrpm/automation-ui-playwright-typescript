@@ -5,7 +5,11 @@ test.describe('Home Page', () => {
   let uniqueTag: string;
 
   test.beforeAll(async ({ apiRequest }) => {
-    const token = await getAuthToken(apiRequest, process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+    const token = await getAuthToken(
+      apiRequest,
+      process.env.TEST_USER_EMAIL!,
+      process.env.TEST_USER_PASSWORD!
+    );
     uniqueTag = `testtag${Date.now()}`;
     await Promise.all([
       createArticle(apiRequest, token, {
@@ -45,7 +49,7 @@ test.describe('Your Feed', () => {
     const testUserToken = await getAuthToken(
       apiRequest,
       process.env.TEST_USER_EMAIL!,
-      process.env.TEST_USER_PASSWORD!,
+      process.env.TEST_USER_PASSWORD!
     );
     const authorUsername = process.env.ARTICLE_AUTHOR_USERNAME || 'articleauthor';
     await followUser(apiRequest, testUserToken, authorUsername);
@@ -53,7 +57,7 @@ test.describe('Your Feed', () => {
     const authorToken = await getAuthToken(
       apiRequest,
       process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123',
+      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, authorToken, {
       title: `Your Feed Article ${Date.now()}`,
@@ -62,14 +66,22 @@ test.describe('Your Feed', () => {
     });
   });
 
-  test('authenticated user sees Your Feed tab', { tag: '@smoke' }, async ({ authenticatedPage, homePage }) => {
-    await homePage.goto();
-    await expect(homePage.yourFeedTab).toBeVisible();
-  });
+  test(
+    'authenticated user sees Your Feed tab',
+    { tag: '@smoke' },
+    async ({ authenticatedPage, homePage }) => {
+      await homePage.goto();
+      await expect(homePage.yourFeedTab).toBeVisible();
+    }
+  );
 
-  test('Your Feed shows articles from followed users', { tag: '@regression' }, async ({ authenticatedPage, homePage }) => {
-    await homePage.goto();
-    await homePage.clickYourFeed();
-    await expect(homePage.articlePreviews.first()).toBeVisible();
-  });
+  test(
+    'Your Feed shows articles from followed users',
+    { tag: '@regression' },
+    async ({ authenticatedPage, homePage }) => {
+      await homePage.goto();
+      await homePage.clickYourFeed();
+      await expect(homePage.articlePreviews.first()).toBeVisible();
+    }
+  );
 });
