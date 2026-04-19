@@ -24,11 +24,16 @@ async function seedUser(username: string, email: string, password: string): Prom
 
 async function setAvatar(token: string, seed: string): Promise<void> {
   const { context, csrfToken } = await createCsrfAwareApiContext();
-  await context.put('user', {
+  const response = await context.put('user', {
     headers: { Authorization: `Token ${token}`, 'X-CSRFToken': csrfToken },
     data: { user: { image: `https://api.dicebear.com/7.x/identicon/svg?seed=${seed}` } },
   });
   await context.dispose();
+  if (!response.ok()) {
+    throw new Error(
+      `Failed to set avatar (seed="${seed}"): ${response.status()} ${await response.text()}`
+    );
+  }
 }
 
 async function globalSetup() {

@@ -34,14 +34,12 @@ test.describe('View Article', () => {
     'article page shows title and body',
     { tag: '@smoke' },
     async ({ authenticatedPage, editorPage, articlePage }) => {
+      const title = `View Test Article ${Date.now()}`;
+      const body = 'Article body content';
       await editorPage.goto();
-      await editorPage.publish({
-        title: `View Test Article ${Date.now()}`,
-        description: 'For viewing',
-        body: 'Article body content',
-      });
-      await expect(articlePage.title).toBeVisible();
-      await expect(articlePage.body).toBeVisible();
+      await editorPage.publish({ title, description: 'For viewing', body });
+      await expect(articlePage.title).toHaveText(title);
+      await expect(articlePage.body).toContainText(body);
     }
   );
 });

@@ -100,7 +100,6 @@ Copy `.env.example` to `.env` and adjust as needed.
 | `TEST_USER_USERNAME` | `testuser`                  | Test user seeded before suite runs |
 | `TEST_USER_EMAIL`    | `test@example.com`          | Test user seeded before suite runs |
 | `TEST_USER_PASSWORD` | `password123`               | Test user seeded before suite runs |
-| `API_PORT`           | `8000`                      | Backend port                       |
 | `FRONTEND_PORT`      | `4100`                      | Frontend port                      |
 | `DB_USER`            | `postgres`                  | PostgreSQL user                    |
 | `DB_PASSWORD`        | `postgres`                  | PostgreSQL password                |
