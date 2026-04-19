@@ -49,10 +49,9 @@ test.describe('Register', () => {
 });
 
 test.describe('Logout', () => {
-  test('authenticated user can sign out', { tag: '@smoke' }, async ({ authenticatedPage, page }) => {
-    await page.locator('nav').getByRole('link', { name: 'Settings' }).click();
-    await expect(page).toHaveURL(/\/settings/);
-    await page.getByRole('button', { name: 'Or click here to logout' }).click();
-    await expect(page.locator('nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
+  test('authenticated user can sign out', { tag: '@smoke' }, async ({ authenticatedPage, settingsPage }) => {
+    await settingsPage.goto();
+    await settingsPage.logoutButton.click();
+    await expect(settingsPage.navSignIn).toBeVisible();
   });
 });
