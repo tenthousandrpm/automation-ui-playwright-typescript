@@ -19,6 +19,9 @@ export async function getAuthToken(
   const response = await request.post('users/login', {
     data: { user: { email, password } },
   });
+  if (!response.ok()) {
+    throw new Error(`Login failed for "${email}": ${response.status()} ${await response.text()}`);
+  }
   const { user } = await response.json();
   return user.token;
 }
@@ -33,6 +36,11 @@ export async function createArticle(
     headers: { Authorization: `Token ${token}` },
     data: { article: { ...rest, ...(tags ? { tagList: tags } : {}) } },
   });
+  if (!response.ok()) {
+    throw new Error(
+      `Failed to create article "${article.title}": ${response.status()} ${await response.text()}`
+    );
+  }
   const { article: created } = await response.json();
   return { slug: created.slug, title: created.title };
 }
@@ -67,6 +75,11 @@ export async function createComment(
     headers: { Authorization: `Token ${token}` },
     data: { comment: { body } },
   });
+  if (!response.ok()) {
+    throw new Error(
+      `Failed to create comment on "${slug}": ${response.status()} ${await response.text()}`
+    );
+  }
   const { comment } = await response.json();
   return comment.id;
 }

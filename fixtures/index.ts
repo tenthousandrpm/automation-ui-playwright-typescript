@@ -21,7 +21,7 @@ type Pages = {
 };
 
 type AuthFixtures = {
-  authenticatedPage: { token: string; username: string; email: string };
+  authenticatedPage: void;
   apiRequest: APIRequestContext;
   authenticatedApiClient: ApiClient;
   authorApiClient: ApiClient;
@@ -95,7 +95,7 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
   authenticatedPage: async ({ page, loginPage }, use) => {
     await loginPage.navSignIn.click();
 
-    const [response] = await Promise.all([
+    await Promise.all([
       page.waitForResponse((r) => r.url().includes('/users/login') && r.status() === 200),
       (async () => {
         await page.locator('[data-test="login-email"]').fill(config.credentials.testUser.email);
@@ -108,10 +108,9 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
       })(),
     ]);
 
-    const { user } = await response.json();
     await page.waitForURL((url) => !url.pathname.startsWith('/login'));
 
-    await use({ token: user.token, username: user.username, email: user.email });
+    await use();
   },
 });
 
