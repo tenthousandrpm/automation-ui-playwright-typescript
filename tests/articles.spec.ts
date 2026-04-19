@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures';
+import { config } from '../config/env';
 
 test.describe('Create Article', () => {
   test(
@@ -91,8 +92,8 @@ test.describe('Favorite Article', () => {
     async ({ loginPage, editorPage, settingsPage, articlePage, page }) => {
       await loginPage.navSignIn.click();
       await loginPage.login(
-        process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-        process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
+        config.credentials.articleAuthor.email,
+        config.credentials.articleAuthor.password
       );
       await page.waitForURL((url) => !url.pathname.startsWith('/login'));
       await editorPage.goto();
@@ -108,7 +109,10 @@ test.describe('Favorite Article', () => {
       await settingsPage.logoutButton.click();
 
       await loginPage.navSignIn.click();
-      await loginPage.login(process.env.TEST_USER_EMAIL!, process.env.TEST_USER_PASSWORD!);
+      await loginPage.login(
+        config.credentials.testUser.email,
+        config.credentials.testUser.password
+      );
       await page.waitForURL((url) => !url.pathname.startsWith('/login'));
       await articlePage.goto(slug);
       await expect(articlePage.favoriteButton).toContainText('(0)');

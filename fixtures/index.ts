@@ -1,5 +1,6 @@
 import { test as base, expect, APIRequestContext } from '@playwright/test';
 import { createCsrfAwareApiContext } from '../config/csrf';
+import { config } from '../config/env';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
@@ -76,8 +77,8 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
   authenticatedApiClient: async ({ apiRequest }, use) => {
     const client = await ApiClient.create(
       apiRequest,
-      process.env.TEST_USER_EMAIL!,
-      process.env.TEST_USER_PASSWORD!
+      config.credentials.testUser.email,
+      config.credentials.testUser.password
     );
     await use(client);
   },
@@ -85,8 +86,8 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
   authorApiClient: async ({ apiRequest }, use) => {
     const client = await ApiClient.create(
       apiRequest,
-      process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-      process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
+      config.credentials.articleAuthor.email,
+      config.credentials.articleAuthor.password
     );
     await use(client);
   },
@@ -97,8 +98,10 @@ export const test = base.extend<Pages & AuthFixtures & NavigationFixtures>({
     const [response] = await Promise.all([
       page.waitForResponse((r) => r.url().includes('/users/login') && r.status() === 200),
       (async () => {
-        await page.locator('[data-test="login-email"]').fill(process.env.TEST_USER_EMAIL!);
-        await page.locator('[data-test="login-password"]').fill(process.env.TEST_USER_PASSWORD!);
+        await page.locator('[data-test="login-email"]').fill(config.credentials.testUser.email);
+        await page
+          .locator('[data-test="login-password"]')
+          .fill(config.credentials.testUser.password);
         await page.locator('[data-test="login-submit"]').waitFor({ state: 'attached' });
         await expect(page.locator('[data-test="login-submit"]')).toBeEnabled();
         await page.locator('[data-test="login-submit"]').click();
