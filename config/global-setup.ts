@@ -1,8 +1,6 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { execSync } from 'child_process';
 import { createCsrfAwareApiContext } from './csrf';
+import { config } from './env';
 
 async function seedUser(username: string, email: string, password: string): Promise<string> {
   const { context, csrfToken } = await createCsrfAwareApiContext();
@@ -41,18 +39,18 @@ async function globalSetup() {
   execSync(`docker exec ${container} python manage.py flush --no-input`, { stdio: 'inherit' });
 
   const testUserToken = await seedUser(
-    process.env.TEST_USER_USERNAME || 'testuser',
-    process.env.TEST_USER_EMAIL!,
-    process.env.TEST_USER_PASSWORD!
+    config.credentials.testUser.username,
+    config.credentials.testUser.email,
+    config.credentials.testUser.password
   );
-  await setAvatar(testUserToken, 'testuser');
+  await setAvatar(testUserToken, config.credentials.testUser.username);
 
   const authorToken = await seedUser(
-    process.env.ARTICLE_AUTHOR_USERNAME || 'articleauthor',
-    process.env.ARTICLE_AUTHOR_EMAIL || 'author@example.com',
-    process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
+    config.credentials.articleAuthor.username,
+    config.credentials.articleAuthor.email,
+    config.credentials.articleAuthor.password
   );
-  await setAvatar(authorToken, 'articleauthor');
+  await setAvatar(authorToken, config.credentials.articleAuthor.username);
 }
 
 export default globalSetup;
