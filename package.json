@@ -17,6 +17,8 @@
     "@types/node": "^25.5.2",
     "@typescript-eslint/eslint-plugin": "^8.58.2",
     "@typescript-eslint/parser": "^8.58.2",
+    "allure-commandline": "^2.38.1",
+    "allure-playwright": "^3.7.1",
     "dotenv": "^16.4.7",
     "eslint": "^10.2.1",
     "eslint-config-prettier": "^10.1.8",

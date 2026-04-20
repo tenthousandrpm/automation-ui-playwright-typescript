@@ -13,7 +13,12 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
 
-  reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['junit', { outputFile: 'test-results/junit-results.xml' }],
+    ['allure-playwright', { outputFolder: 'allure-results' }],
+  ],
 
   use: {
     baseURL: config.baseUrl,

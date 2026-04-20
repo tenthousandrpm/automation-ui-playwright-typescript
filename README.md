@@ -73,11 +73,24 @@ npx playwright test --project=firefox
 npx playwright test --project=webkit
 ```
 
-### View the HTML report
+### View reports
+
+Each test run produces three reports:
+
+| Report          | Command                          | Notes                          |
+| --------------- | -------------------------------- | ------------------------------ |
+| Playwright HTML | `npx playwright show-report`     | Built-in interactive report    |
+| Allure          | See below                        | Rich dashboard with trends     |
+| JUnit XML       | `test-results/junit-results.xml` | For CI/CD platform integration |
+
+**Allure report (devcontainer):**
 
 ```bash
-npx playwright show-report
+npx allure generate allure-results --clean
+npx allure open --port 5252
 ```
+
+Then open `http://localhost:5252` in your browser. Port 5252 is pre-forwarded by the devcontainer.
 
 Traces, screenshots, and videos are captured automatically on failure.
 
@@ -114,7 +127,8 @@ The framework ships with a GitHub Actions workflow (`.github/workflows/playwrigh
 2. Checks out the repo with submodules
 3. Spins up the full stack via Docker Compose (when targeting localhost)
 4. Builds and runs the Playwright container (smoke tests only)
-5. Uploads the HTML report as a downloadable artifact
+5. Generates an Allure report from the raw results
+6. Uploads three downloadable artifacts: `playwright-report`, `allure-report`, and `junit-results`
 
 ### Running against a different target
 
@@ -135,6 +149,8 @@ docker run --rm \
   --network host \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/playwright-report:/app/playwright-report \
+  -v $(pwd)/test-results:/app/test-results \
+  -v $(pwd)/allure-results:/app/allure-results \
   -e BASE_URL=http://localhost:4100 \
   -e API_URL=http://localhost:8000/api \
   playwright-tests
