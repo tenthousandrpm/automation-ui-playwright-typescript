@@ -13,5 +13,12 @@
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint"
   ],
-  "postCreateCommand": "npm install -g npm@11.12.1 && npm install"
+  "postCreateCommand": "apt-get update -y && apt-get install -y default-jre && npm install -g npm@11.12.1 && npm install",
+  "forwardPorts": [5252],
+  "portsAttributes": {
+    "5252": {
+      "label": "Allure Report",
+      "onAutoForward": "notify"
+    }
+  }
 }
