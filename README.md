@@ -77,11 +77,11 @@ npx playwright test --project=webkit
 
 Each test run produces three reports:
 
-| Report | Command | Notes |
-|--------|---------|-------|
-| Playwright HTML | `npx playwright show-report` | Built-in interactive report |
-| Allure | See below | Rich dashboard with trends |
-| JUnit XML | `test-results/junit-results.xml` | For CI/CD platform integration |
+| Report          | Command                          | Notes                          |
+| --------------- | -------------------------------- | ------------------------------ |
+| Playwright HTML | `npx playwright show-report`     | Built-in interactive report    |
+| Allure          | See below                        | Rich dashboard with trends     |
+| JUnit XML       | `test-results/junit-results.xml` | For CI/CD platform integration |
 
 **Allure report (devcontainer):**
 
