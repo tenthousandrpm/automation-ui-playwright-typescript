@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { config } from '../config/env';
 import { BasePage } from './BasePage';
 
 export class HomePage extends BasePage {
@@ -9,7 +10,11 @@ export class HomePage extends BasePage {
   }
 
   async goto() {
-    await this.navHome.click();
+    if (this.page.url().startsWith(config.baseUrl)) {
+      await this.navHome.click();
+    } else {
+      await this.page.goto(this.url);
+    }
     await expect(this.page).toHaveURL(/\/((\?.*)?$)/);
   }
 

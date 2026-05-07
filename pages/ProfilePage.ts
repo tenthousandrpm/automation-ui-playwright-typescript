@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { config } from '../config/env';
 import { BasePage } from './BasePage';
 
 export class ProfilePage extends BasePage {
@@ -11,7 +12,11 @@ export class ProfilePage extends BasePage {
     if (await navLink.isVisible({ timeout: 500 }).catch(() => false)) {
       await navLink.click();
     } else {
-      await this.navHome.click();
+      if (this.page.url().startsWith(config.baseUrl)) {
+        await this.navHome.click();
+      } else {
+        await this.page.goto('/');
+      }
       const authorLink = this.page.locator(`a[href="/profile/${username}/"]`).first();
       await authorLink.waitFor({ state: 'visible' });
       await authorLink.click();
