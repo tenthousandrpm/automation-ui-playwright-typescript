@@ -153,7 +153,6 @@ When `base_url` is not localhost, the Docker Compose stack is skipped entirely.
 docker build -t playwright-tests .
 docker run --rm \
   --network host \
-  -v /var/run/docker.sock:/var/run/docker.sock \
   -v $(pwd)/playwright-report:/app/playwright-report \
   -v $(pwd)/test-results:/app/test-results \
   -v $(pwd)/allure-results:/app/allure-results \
