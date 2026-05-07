@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 
 test.describe('Editor Validation', () => {
@@ -17,7 +18,7 @@ test.describe('Editor Validation', () => {
     { tag: '@regression' },
     async ({ authenticatedPage, editorPage }) => {
       await editorPage.goto();
-      await editorPage.titleInput.fill(`Title ${Date.now()}`);
+      await editorPage.titleInput.fill(`Title ${randomUUID().split('-')[0]}`);
       await editorPage.descriptionInput.fill('Some description');
       await expect(editorPage.submitButton).toBeDisabled();
     }

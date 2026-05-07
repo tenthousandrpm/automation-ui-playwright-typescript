@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 import { getAuthToken, createArticle, createComment } from '../fixtures/api-helpers';
 
@@ -13,7 +14,7 @@ test.describe('Comments', () => {
       process.env.TEST_USER_PASSWORD!
     );
     const article = await createArticle(apiRequest, token, {
-      title: `Comment Test Article ${Date.now()}`,
+      title: `Comment Test Article ${randomUUID().split('-')[0]}`,
       description: 'For commenting',
       body: 'Article body content',
     });
@@ -24,7 +25,7 @@ test.describe('Comments', () => {
     'authenticated user can post a comment',
     { tag: '@smoke' },
     async ({ authenticatedPage, articlePage }) => {
-      const comment = `Test comment ${Date.now()}`;
+      const comment = `Test comment ${randomUUID().split('-')[0]}`;
       await articlePage.goto(slug);
       await articlePage.postComment(comment);
       await expect(articlePage.comments.first()).toContainText(comment);
@@ -50,7 +51,7 @@ test.describe('Comments', () => {
         process.env.TEST_USER_EMAIL!,
         process.env.TEST_USER_PASSWORD!
       );
-      const commentText = `Deletable comment ${Date.now()}`;
+      const commentText = `Deletable comment ${randomUUID().split('-')[0]}`;
       await createComment(apiRequest, token, slug, commentText);
       await articlePage.goto(slug);
       // Wait for the specific comment to appear before interacting

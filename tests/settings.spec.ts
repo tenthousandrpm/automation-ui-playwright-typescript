@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 
 test.describe('Settings', () => {
@@ -18,7 +19,7 @@ test.describe('Settings', () => {
       await settingsPage.goto();
       // Wait for the form to be populated with the user's data from the API, not just rendered
       await expect(settingsPage.emailInput).toHaveValue(process.env.TEST_USER_EMAIL!);
-      const newBio = `Bio updated at ${Date.now()}`;
+      const newBio = `Bio updated at ${randomUUID().split('-')[0]}`;
       await settingsPage.bioInput.fill(newBio);
       await settingsPage.passwordInput.fill(process.env.TEST_USER_PASSWORD!);
       // Wait for React Hook Form to register the form as dirty before clicking

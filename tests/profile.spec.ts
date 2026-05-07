@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 import { getAuthToken, createArticle } from '../fixtures/api-helpers';
 
@@ -11,7 +12,7 @@ test.describe('Profile Page', () => {
       process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, token, {
-      title: `Profile Page Setup Article ${Date.now()}`,
+      title: `Profile Page Setup Article ${randomUUID().split('-')[0]}`,
       description: 'For profile page test setup',
       body: 'Article body content',
     });
@@ -32,7 +33,7 @@ test.describe('Profile Page', () => {
         process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
       );
       await createArticle(apiRequest, token, {
-        title: `Profile Page Article ${Date.now()}`,
+        title: `Profile Page Article ${randomUUID().split('-')[0]}`,
         description: 'For profile page test',
         body: 'Article body content',
       });
@@ -70,7 +71,7 @@ test.describe('Follow / Unfollow', () => {
       process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, token, {
-      title: `Follow Test Article ${Date.now()}`,
+      title: `Follow Test Article ${randomUUID().split('-')[0]}`,
       description: 'For follow test setup',
       body: 'Article body content',
     });

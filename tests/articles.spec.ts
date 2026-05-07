@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 import { config } from '../config/env';
 
@@ -6,7 +7,7 @@ test.describe('Create Article', () => {
     'authenticated user can publish an article',
     { tag: '@smoke' },
     async ({ authenticatedPage, editorPage, articlePage, page }) => {
-      const title = `Test Article ${Date.now()}`;
+      const title = `Test Article ${randomUUID().split('-')[0]}`;
       await editorPage.goto();
       await editorPage.publish({
         title,
@@ -34,7 +35,7 @@ test.describe('View Article', () => {
     'article page shows title and body',
     { tag: '@smoke' },
     async ({ authenticatedPage, editorPage, articlePage }) => {
-      const title = `View Test Article ${Date.now()}`;
+      const title = `View Test Article ${randomUUID().split('-')[0]}`;
       const body = 'Article body content';
       await editorPage.goto();
       await editorPage.publish({ title, description: 'For viewing', body });
@@ -51,13 +52,13 @@ test.describe('Edit Article', () => {
     async ({ authenticatedPage, editorPage, articlePage, page }) => {
       await editorPage.goto();
       await editorPage.publish({
-        title: `Edit Test Article ${Date.now()}`,
+        title: `Edit Test Article ${randomUUID().split('-')[0]}`,
         description: 'For editing',
         body: 'Original body content',
       });
       await articlePage.editButton.click();
       await expect(page).toHaveURL(/\/editor\//);
-      const updatedTitle = `Updated Title ${Date.now()}`;
+      const updatedTitle = `Updated Title ${randomUUID().split('-')[0]}`;
       await editorPage.titleInput.fill(updatedTitle);
       await editorPage.submitButton.click();
       await expect(page).toHaveURL(/\/article\//);
@@ -73,7 +74,7 @@ test.describe('Delete Article', () => {
     async ({ authenticatedPage, editorPage, articlePage, page }) => {
       await editorPage.goto();
       await editorPage.publish({
-        title: `Delete Test Article ${Date.now()}`,
+        title: `Delete Test Article ${randomUUID().split('-')[0]}`,
         description: 'For deleting',
         body: 'Article body content',
       });
@@ -96,7 +97,7 @@ test.describe('Favorite Article', () => {
       await page.waitForURL((url) => !url.pathname.startsWith('/login'));
       await editorPage.goto();
       await editorPage.publish({
-        title: `Favorite Test Article ${Date.now()}`,
+        title: `Favorite Test Article ${randomUUID().split('-')[0]}`,
         description: 'For favoriting',
         body: 'Article body content',
       });
@@ -129,7 +130,7 @@ test.describe('Article Tags', () => {
     async ({ authenticatedPage, editorPage, articlePage }) => {
       await editorPage.goto();
       await editorPage.publish({
-        title: `Tags Test Article ${Date.now()}`,
+        title: `Tags Test Article ${randomUUID().split('-')[0]}`,
         description: 'For tag display',
         body: 'Article body content',
         tags: ['playwright', 'typescript'],
