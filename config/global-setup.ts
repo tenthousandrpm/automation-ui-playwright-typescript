@@ -37,11 +37,12 @@ async function setAvatar(token: string, seed: string): Promise<void> {
 }
 
 async function globalSetup() {
-  const project = process.env.COMPOSE_PROJECT_NAME ?? 'automation-ui-playwright-typescript';
-  const container = `${project}-api-1`;
-
-  console.log('Flushing database...');
-  execSync(`docker exec ${container} python manage.py flush --no-input`, { stdio: 'inherit' });
+  if (!process.env.CI) {
+    const project = process.env.COMPOSE_PROJECT_NAME ?? 'automation-ui-playwright-typescript';
+    const container = `${project}-api-1`;
+    console.log('Flushing database...');
+    execSync(`docker exec ${container} python manage.py flush --no-input`, { stdio: 'inherit' });
+  }
 
   const testUserToken = await seedUser(
     config.credentials.testUser.username,
