@@ -53,17 +53,18 @@ npm test
 
 ### Named scripts
 
-| Script                    | What it runs                     |
-| ------------------------- | -------------------------------- |
-| `npm test`                | All tests                        |
-| `npm run test:smoke`      | `@smoke` tests only              |
-| `npm run test:regression` | `@regression` tests only         |
-| `npm run test:headed`     | All tests in headed mode         |
-| `npm run test:debug`      | All tests in debug mode          |
-| `npm run lint`            | Check for lint errors            |
-| `npm run lint:fix`        | Auto-fix lint errors             |
-| `npm run format`          | Format all files with Prettier   |
-| `npm run format:check`    | Check formatting without writing |
+| Script                    | What it runs                               |
+| ------------------------- | ------------------------------------------ |
+| `npm test`                | All tests                                  |
+| `npm run test:smoke`      | `@smoke` tests only                        |
+| `npm run test:regression` | `@regression` tests only                   |
+| `npm run test:headed`     | All tests in headed mode                   |
+| `npm run test:debug`      | All tests in debug mode                    |
+| `npm run check:flaky`     | Fail if any test passed only after retries |
+| `npm run lint`            | Check for lint errors                      |
+| `npm run lint:fix`        | Auto-fix lint errors                       |
+| `npm run format`          | Format all files with Prettier             |
+| `npm run format:check`    | Check formatting without writing           |
 
 ### Run a specific browser
 
@@ -131,8 +132,9 @@ The framework ships with a GitHub Actions workflow (`.github/workflows/playwrigh
 2. Checks out the repo with submodules
 3. Spins up the full stack via Docker Compose (when targeting localhost)
 4. Builds and runs the Playwright container (smoke tests only)
-5. Generates an Allure report from the raw results
-6. Uploads three downloadable artifacts: `playwright-report`, `allure-report`, and `junit-results`
+5. Fails the build if any test passed only after retries (`check:flaky`)
+6. Generates an Allure report from the raw results
+7. Uploads four downloadable artifacts: `playwright-report`, `allure-report`, `junit-results`, and `json-results`
 
 ### Running against a different target
 

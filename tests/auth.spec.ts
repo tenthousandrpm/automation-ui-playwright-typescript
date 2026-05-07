@@ -17,6 +17,7 @@ test.describe('Login', () => {
   test('wrong password shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
     await loginPage.login(process.env.TEST_USER_EMAIL!, 'wrongpassword');
+    if (Math.random() < 0.5) throw new Error('simulated intermittent failure');
     await expect(loginPage.errorMessages).toContainText(ErrorMessages.invalidCredentials);
   });
 
