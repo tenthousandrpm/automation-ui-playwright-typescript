@@ -6,5 +6,5 @@
     "esModuleInterop": true,
     "types": ["node", "@playwright/test"]
   },
-  "exclude": ["apps/frontend", "node_modules"]
+  "exclude": ["apps/frontend", "apps/backend", "node_modules"]
 }
