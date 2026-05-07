@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 import { getAuthToken, createArticle, followUser } from '../fixtures/api-helpers';
 
@@ -10,15 +11,15 @@ test.describe('Home Page', () => {
       process.env.TEST_USER_EMAIL!,
       process.env.TEST_USER_PASSWORD!
     );
-    uniqueTag = `testtag${Date.now()}`;
+    uniqueTag = `testtag${randomUUID().split('-')[0]}`;
     await Promise.all([
       createArticle(apiRequest, token, {
-        title: `Home Feed Article ${Date.now()}`,
+        title: `Home Feed Article ${randomUUID().split('-')[0]}`,
         description: 'Seeded for home feed test',
         body: 'Article body content',
       }),
       createArticle(apiRequest, token, {
-        title: `Tagged Article ${Date.now()}`,
+        title: `Tagged Article ${randomUUID().split('-')[0]}`,
         description: 'Tagged article',
         body: 'Body',
         tags: [uniqueTag],
@@ -60,7 +61,7 @@ test.describe('Your Feed', () => {
       process.env.ARTICLE_AUTHOR_PASSWORD || 'password123'
     );
     await createArticle(apiRequest, authorToken, {
-      title: `Your Feed Article ${Date.now()}`,
+      title: `Your Feed Article ${randomUUID().split('-')[0]}`,
       description: 'For your feed test',
       body: 'Article body content',
     });

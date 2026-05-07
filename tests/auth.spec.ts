@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
 import { ErrorMessages } from '../config/error-messages';
 
@@ -30,7 +31,7 @@ test.describe('Login', () => {
 
 test.describe('Register', () => {
   test('new user can register successfully', { tag: '@smoke' }, async ({ registerPage, page }) => {
-    const unique = Date.now();
+    const unique = randomUUID().split('-')[0];
     await registerPage.navSignUp.click();
     await registerPage.register(`newuser${unique}`, `newuser${unique}@example.com`, 'password123');
     await expect(page).not.toHaveURL('/register');
