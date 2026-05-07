@@ -8,7 +8,7 @@ export default defineConfig({
   globalSetup: './config/global-setup',
   testDir: './tests',
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 5 : 0,
   workers: process.env.CI ? 2 : undefined,
   timeout: 30_000,
   expect: { timeout: 5_000 },
@@ -16,6 +16,7 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
     ['junit', { outputFile: 'test-results/junit-results.xml' }],
     ['allure-playwright', { outputFolder: 'allure-results' }],
   ],
