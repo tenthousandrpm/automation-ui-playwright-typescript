@@ -43,7 +43,7 @@ function collectFlakyTests(suites: Suite[], prefix = ''): FlakyTest[] {
           specTitle: `${title} > ${spec.title}`,
           projectName: t.projectName,
           attempts: t.results.length,
-        })),
+        }))
     );
     return [...fromSpecs, ...collectFlakyTests(suite.suites ?? [], title)];
   });
@@ -63,7 +63,7 @@ const flaky = collectFlakyTests(report.suites);
 if (flaky.length > 0) {
   console.warn(`\n${flaky.length} test(s) passed only after retries:`);
   flaky.forEach(({ specTitle, projectName, attempts }) =>
-    console.warn(`  - ${specTitle} [${projectName}] (${attempts} attempts)`),
+    console.warn(`  - ${specTitle} [${projectName}] (${attempts} attempts)`)
   );
   process.exit(1);
 }

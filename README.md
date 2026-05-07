@@ -53,18 +53,18 @@ npm test
 
 ### Named scripts
 
-| Script                    | What it runs                                          |
-| ------------------------- | ----------------------------------------------------- |
-| `npm test`                | All tests                                             |
-| `npm run test:smoke`      | `@smoke` tests only                                   |
-| `npm run test:regression` | `@regression` tests only                              |
-| `npm run test:headed`     | All tests in headed mode                              |
-| `npm run test:debug`      | All tests in debug mode                               |
-| `npm run check:flaky`     | Fail if any test passed only after retries            |
-| `npm run lint`            | Check for lint errors                                 |
-| `npm run lint:fix`        | Auto-fix lint errors                                  |
-| `npm run format`          | Format all files with Prettier                        |
-| `npm run format:check`    | Check formatting without writing                      |
+| Script                    | What it runs                               |
+| ------------------------- | ------------------------------------------ |
+| `npm test`                | All tests                                  |
+| `npm run test:smoke`      | `@smoke` tests only                        |
+| `npm run test:regression` | `@regression` tests only                   |
+| `npm run test:headed`     | All tests in headed mode                   |
+| `npm run test:debug`      | All tests in debug mode                    |
+| `npm run check:flaky`     | Fail if any test passed only after retries |
+| `npm run lint`            | Check for lint errors                      |
+| `npm run lint:fix`        | Auto-fix lint errors                       |
+| `npm run format`          | Format all files with Prettier             |
+| `npm run format:check`    | Check formatting without writing           |
 
 ### Run a specific browser
 
