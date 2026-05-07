@@ -101,6 +101,10 @@ Tests are tagged with `@smoke` or `@regression` using Playwright's annotation AP
 - **`@smoke`** — critical happy-path tests; run on every CI push/PR
 - **`@regression`** — broader coverage; run locally or on a scheduled basis
 
+## Test setup requirements
+
+The test fixtures use `GET /csrf/` on the backend to acquire Django's CSRF cookie before running any mutating API calls. This endpoint is defined in `config/urls.py` and must be reachable at `serverUrl` (derived from `API_URL`). It does not require the Django admin panel to be enabled.
+
 ## Configuration
 
 Copy `.env.example` to `.env` and adjust as needed.

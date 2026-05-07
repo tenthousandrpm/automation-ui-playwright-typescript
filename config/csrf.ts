@@ -11,7 +11,7 @@ export async function createCsrfAwareApiContext(): Promise<{
   csrfToken: string;
 }> {
   const tempCtx = await baseRequest.newContext({ baseURL: config.serverUrl });
-  await tempCtx.get('/admin/login/');
+  await tempCtx.get('/csrf/');
   const state = await tempCtx.storageState();
   const csrfToken = state.cookies.find((c) => c.name === 'csrftoken')?.value ?? '';
   await tempCtx.dispose();
