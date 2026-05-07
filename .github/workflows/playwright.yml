@@ -33,7 +33,7 @@ jobs:
     needs: lint
 
     env:
-      COMPOSE_PROJECT_NAME: automation-ui-playwright-typescript
+      COMPOSE_PROJECT_NAME: automation-ui-playwright-typescript-${{ github.run_id }}
       BASE_URL: ${{ inputs.base_url || 'http://localhost:4100' }}
       API_URL: ${{ inputs.api_url || 'http://localhost:8000/api' }}
 
@@ -74,6 +74,7 @@ jobs:
             --network host \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -e CI=true \
+            -e COMPOSE_PROJECT_NAME=${{ env.COMPOSE_PROJECT_NAME }} \
             -e BASE_URL=${{ env.BASE_URL }} \
             -e API_URL=${{ env.API_URL }} \
             -e HEADLESS=true \
