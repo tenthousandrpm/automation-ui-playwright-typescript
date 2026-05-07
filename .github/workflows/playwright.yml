@@ -65,6 +65,21 @@ jobs:
           timeout 120 bash -c 'until curl -s "$API_URL" > /dev/null 2>&1; do sleep 2; done'
           echo "API is ready"
 
+      - name: Validate required secrets
+        run: |
+          required=(TEST_USER_EMAIL TEST_USER_PASSWORD ARTICLE_AUTHOR_EMAIL ARTICLE_AUTHOR_PASSWORD)
+          for var in "${required[@]}"; do
+            if [ -z "${!var}" ]; then
+              echo "ERROR: Required secret '$var' is not set"
+              exit 1
+            fi
+          done
+        env:
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          ARTICLE_AUTHOR_EMAIL: ${{ secrets.ARTICLE_AUTHOR_EMAIL }}
+          ARTICLE_AUTHOR_PASSWORD: ${{ secrets.ARTICLE_AUTHOR_PASSWORD }}
+
       - name: Build test image
         run: docker build -t playwright-tests .
 
@@ -79,11 +94,11 @@ jobs:
             -e API_URL=${{ env.API_URL }} \
             -e HEADLESS=true \
             -e TEST_USER_USERNAME=${{ secrets.TEST_USER_USERNAME || 'testuser' }} \
-            -e TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL || 'test@example.com' }} \
-            -e TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD || 'password123' }} \
+            -e TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }} \
+            -e TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }} \
             -e ARTICLE_AUTHOR_USERNAME=${{ secrets.ARTICLE_AUTHOR_USERNAME || 'articleauthor' }} \
-            -e ARTICLE_AUTHOR_EMAIL=${{ secrets.ARTICLE_AUTHOR_EMAIL || 'author@example.com' }} \
-            -e ARTICLE_AUTHOR_PASSWORD=${{ secrets.ARTICLE_AUTHOR_PASSWORD || 'password123' }} \
+            -e ARTICLE_AUTHOR_EMAIL=${{ secrets.ARTICLE_AUTHOR_EMAIL }} \
+            -e ARTICLE_AUTHOR_PASSWORD=${{ secrets.ARTICLE_AUTHOR_PASSWORD }} \
             -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
             -v ${{ github.workspace }}/test-results:/app/test-results \
             -v ${{ github.workspace }}/allure-results:/app/allure-results \
