@@ -1,4 +1,5 @@
 import { test, expect } from '../fixtures';
+import { ErrorMessages } from '../config/error-messages';
 
 test.describe('Login', () => {
   test(
@@ -16,13 +17,13 @@ test.describe('Login', () => {
   test('wrong password shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
     await loginPage.login(process.env.TEST_USER_EMAIL!, 'wrongpassword');
-    await expect(loginPage.errorMessages).toContainText('invalid');
+    await expect(loginPage.errorMessages).toContainText(ErrorMessages.invalidCredentials);
   });
 
   test('unknown email shows error message', { tag: '@regression' }, async ({ loginPage }) => {
     await loginPage.navSignIn.click();
     await loginPage.login('nobody@nowhere.com', 'password123');
-    await expect(loginPage.errorMessages).toContainText('invalid');
+    await expect(loginPage.errorMessages).toContainText(ErrorMessages.invalidCredentials);
   });
 });
 
@@ -42,7 +43,7 @@ test.describe('Register', () => {
       process.env.TEST_USER_EMAIL!,
       process.env.TEST_USER_PASSWORD!
     );
-    await expect(registerPage.errorMessages).toBeVisible();
+    await expect(registerPage.errorMessages).toContainText(ErrorMessages.emailTaken);
   });
 
   test('duplicate username shows error', { tag: '@regression' }, async ({ registerPage }) => {
@@ -52,7 +53,7 @@ test.describe('Register', () => {
       'unique@example.com',
       process.env.TEST_USER_PASSWORD!
     );
-    await expect(registerPage.errorMessages).toBeVisible();
+    await expect(registerPage.errorMessages).toContainText(ErrorMessages.usernameTaken);
   });
 });
 
