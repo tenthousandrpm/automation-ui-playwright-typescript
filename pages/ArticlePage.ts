@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { config } from '../config/env';
 import { BasePage } from './BasePage';
 
 export class ArticlePage extends BasePage {
@@ -12,7 +13,11 @@ export class ArticlePage extends BasePage {
       .isVisible({ timeout: 500 })
       .catch(() => false);
     if (!foundOnCurrentPage) {
-      await this.navHome.click();
+      if (this.page.url().startsWith(config.baseUrl)) {
+        await this.navHome.click();
+      } else {
+        await this.page.goto('/');
+      }
     }
     await articleLink().click();
     await expect(this.page).toHaveURL(/\/article\//);
