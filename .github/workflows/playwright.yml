@@ -80,6 +80,10 @@ jobs:
           ARTICLE_AUTHOR_EMAIL: ${{ secrets.ARTICLE_AUTHOR_EMAIL }}
           ARTICLE_AUTHOR_PASSWORD: ${{ secrets.ARTICLE_AUTHOR_PASSWORD }}
 
+      - name: Flush database
+        if: startsWith(env.BASE_URL, 'http://localhost')
+        run: docker exec ${{ env.COMPOSE_PROJECT_NAME }}-api-1 python manage.py flush --no-input
+
       - name: Build test image
         run: docker build -t playwright-tests .
 
@@ -87,7 +91,6 @@ jobs:
         run: |
           docker run --rm \
             --network host \
-            -v /var/run/docker.sock:/var/run/docker.sock \
             -e CI=true \
             -e COMPOSE_PROJECT_NAME=${{ env.COMPOSE_PROJECT_NAME }} \
             -e BASE_URL=${{ env.BASE_URL }} \
