@@ -162,6 +162,31 @@ docker run --rm \
   playwright-tests
 ```
 
+## Contributing
+
+### Pre-commit hooks
+
+This repo uses [husky](https://typicode.github.io/husky/) to run type checking and linting before every commit. The hooks run on the **host machine**, not inside Docker, so Node.js must be installed locally even if you run tests via Docker.
+
+**macOS (Homebrew):**
+
+```bash
+brew install node
+```
+
+**Verify:**
+
+```bash
+node --version  # should print v20 or higher
+```
+
+Once node is available, run `npm install` from the repo root — husky wires itself up automatically via the `prepare` script. From that point on, every `git commit` will:
+
+1. Type-check the whole project with `tsc --noEmit`
+2. Auto-fix and re-stage any lint or formatting issues on staged `.ts` files
+
+If node is not found on the host, the hook prints a warning and exits cleanly so commits are never blocked.
+
 ## Design
 
 - **Page Object Model** — all locators and actions live in `pages/`, tests never use raw selectors
