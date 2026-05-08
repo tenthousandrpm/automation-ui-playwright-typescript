@@ -10,16 +10,31 @@ async function seedUser(username: string, email: string, password: string): Prom
     data: { user: { username, email, password } },
   });
 
-  if (response.status() !== 200 && response.status() !== 201) {
-    throw new Error(
-      `Failed to seed user "${username}": ${response.status()} ${await response.text()}`
-    );
+  if (response.status() === 200 || response.status() === 201) {
+    console.log(`User "${username}" created`);
+    const { user } = await response.json();
+    await context.dispose();
+    return user.token;
   }
 
-  console.log(`User "${username}" created`);
-  const { user } = await response.json();
-  await context.dispose();
-  return user.token;
+  if (response.status() === 409) {
+    console.log(`User "${username}" already exists, logging in`);
+    const loginResponse = await context.post('users/login', {
+      data: { user: { email, password } },
+    });
+    if (!loginResponse.ok()) {
+      throw new Error(
+        `Failed to log in existing user "${username}": ${loginResponse.status()} ${await loginResponse.text()}`
+      );
+    }
+    const { user } = await loginResponse.json();
+    await context.dispose();
+    return user.token;
+  }
+
+  throw new Error(
+    `Failed to seed user "${username}": ${response.status()} ${await response.text()}`
+  );
 }
 
 async function setAvatar(token: string, seed: string): Promise<void> {
@@ -37,7 +52,7 @@ async function setAvatar(token: string, seed: string): Promise<void> {
 }
 
 async function globalSetup() {
-  if (!process.env.CI) {
+  if (process.env.PRECLEAN === 'true') {
     const project = process.env.COMPOSE_PROJECT_NAME ?? 'automation-ui-playwright-typescript';
     const container = `${project}-api-1`;
     console.log('Flushing database...');
