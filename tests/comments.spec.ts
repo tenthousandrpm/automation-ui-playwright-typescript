@@ -1,13 +1,11 @@
 import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures';
-import { getAuthToken, createArticle, createComment } from '../fixtures/api-helpers';
-
-test.describe.configure({ mode: 'serial' });
+import { getAuthToken, createArticle, deleteArticle, createComment } from '../fixtures/api-helpers';
 
 test.describe('Comments', () => {
   let slug: string;
 
-  test.beforeAll(async ({ apiRequest }) => {
+  test.beforeEach(async ({ apiRequest }) => {
     const token = await getAuthToken(
       apiRequest,
       process.env.TEST_USER_EMAIL!,
@@ -21,12 +19,21 @@ test.describe('Comments', () => {
     slug = article.slug;
   });
 
+  test.afterEach(async ({ apiRequest }) => {
+    const token = await getAuthToken(
+      apiRequest,
+      process.env.TEST_USER_EMAIL!,
+      process.env.TEST_USER_PASSWORD!
+    );
+    await deleteArticle(apiRequest, token, slug);
+  });
+
   test(
     'authenticated user can post a comment',
     { tag: '@smoke' },
-    async ({ authenticatedPage, articlePage }) => {
+    async ({ authenticatedPage: _authenticatedPage, articlePage }) => {
       const comment = `Test comment ${randomUUID().split('-')[0]}`;
-      await articlePage.goto(slug);
+      await articlePage.goto(slug, process.env.TEST_USER_USERNAME!);
       await articlePage.postComment(comment);
       await expect(articlePage.comments.first()).toContainText(comment);
     }
@@ -36,7 +43,12 @@ test.describe('Comments', () => {
     'unauthenticated user sees sign in prompt instead of comment form',
     { tag: '@regression' },
     async ({ page, articlePage }) => {
-      await articlePage.goto(slug);
+      await Promise.all([
+        page.waitForResponse((r) => r.url().includes('/articles') && r.status() === 200),
+        page.goto('/'),
+      ]);
+      await page.locator('a[href^="/article/"]').first().click();
+      await expect(page).toHaveURL(/\/article\//);
       await expect(page.getByText('Sign in or sign up to add comments')).toBeVisible();
       await expect(articlePage.commentInput).not.toBeVisible();
     }
@@ -45,7 +57,7 @@ test.describe('Comments', () => {
   test(
     'authenticated user can delete their comment',
     { tag: '@regression' },
-    async ({ authenticatedPage, articlePage, apiRequest }) => {
+    async ({ authenticatedPage: _authenticatedPage, articlePage, apiRequest }) => {
       const token = await getAuthToken(
         apiRequest,
         process.env.TEST_USER_EMAIL!,
@@ -53,7 +65,7 @@ test.describe('Comments', () => {
       );
       const commentText = `Deletable comment ${randomUUID().split('-')[0]}`;
       await createComment(apiRequest, token, slug, commentText);
-      await articlePage.goto(slug);
+      await articlePage.goto(slug, process.env.TEST_USER_USERNAME!);
       // Wait for the specific comment to appear before interacting
       await expect(articlePage.comments.filter({ hasText: commentText })).toBeVisible();
       await articlePage.deleteComment(commentText);

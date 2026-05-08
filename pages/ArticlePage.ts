@@ -7,16 +7,20 @@ export class ArticlePage extends BasePage {
     super(page);
   }
 
-  async goto(slug: string) {
+  async goto(slug: string, author?: string) {
     const articleLink = () => this.page.locator(`a[href="/article/${slug}/"]`).first();
-    const foundOnCurrentPage = await articleLink()
-      .isVisible({ timeout: 500 })
-      .catch(() => false);
-    if (!foundOnCurrentPage) {
-      if (this.page.url().startsWith(config.baseUrl)) {
-        await this.navHome.click();
-      } else {
-        await this.page.goto('/');
+    if (author) {
+      await this.page.locator(`nav a[href="/profile/${author}/"]`).click();
+    } else {
+      const foundOnCurrentPage = await articleLink()
+        .isVisible({ timeout: 500 })
+        .catch(() => false);
+      if (!foundOnCurrentPage) {
+        if (this.page.url().startsWith(config.baseUrl)) {
+          await this.navHome.click();
+        } else {
+          await this.page.goto('/');
+        }
       }
     }
     await articleLink().click();
