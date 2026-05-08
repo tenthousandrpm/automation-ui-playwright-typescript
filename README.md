@@ -116,20 +116,20 @@ The test fixtures use `GET /csrf/` on the backend to acquire Django's CSRF cooki
 
 Copy `.env.example` to `.env` and adjust as needed.
 
-| Variable             | Default                     | Description                                                  |
-| -------------------- | --------------------------- | ------------------------------------------------------------ |
-| `BASE_URL`           | `http://localhost:4100`     | Frontend URL for Playwright                                  |
-| `API_URL`            | `http://localhost:8000/api` | Backend API URL for fixtures                                 |
-| `HEADLESS`           | `true`                      | Run browsers headlessly                                      |
-| `PRECLEAN`           | `false`                     | Flush and re-seed the database before the suite runs         |
-| `TEST_USER_USERNAME` | `testuser`                  | Test user seeded before suite runs                           |
-| `TEST_USER_EMAIL`    | `test@example.com`          | Test user seeded before suite runs                           |
-| `TEST_USER_PASSWORD` | `password123`               | Test user seeded before suite runs                           |
-| `FRONTEND_PORT`      | `4100`                      | Frontend port                      |
-| `DB_USER`            | `postgres`                  | PostgreSQL user                    |
-| `DB_PASSWORD`        | `postgres`                  | PostgreSQL password                |
-| `DB_NAME`            | `realworld`                 | PostgreSQL database name           |
-| `SECRET_KEY`         | `dev-secret-key-...`        | Django secret key                  |
+| Variable             | Default                     | Description                                          |
+| -------------------- | --------------------------- | ---------------------------------------------------- |
+| `BASE_URL`           | `http://localhost:4100`     | Frontend URL for Playwright                          |
+| `API_URL`            | `http://localhost:8000/api` | Backend API URL for fixtures                         |
+| `HEADLESS`           | `true`                      | Run browsers headlessly                              |
+| `PRECLEAN`           | `false`                     | Flush and re-seed the database before the suite runs |
+| `TEST_USER_USERNAME` | `testuser`                  | Test user seeded before suite runs                   |
+| `TEST_USER_EMAIL`    | `test@example.com`          | Test user seeded before suite runs                   |
+| `TEST_USER_PASSWORD` | `password123`               | Test user seeded before suite runs                   |
+| `FRONTEND_PORT`      | `4100`                      | Frontend port                                        |
+| `DB_USER`            | `postgres`                  | PostgreSQL user                                      |
+| `DB_PASSWORD`        | `postgres`                  | PostgreSQL password                                  |
+| `DB_NAME`            | `realworld`                 | PostgreSQL database name                             |
+| `SECRET_KEY`         | `dev-secret-key-...`        | Django secret key                                    |
 
 ## CI
 
